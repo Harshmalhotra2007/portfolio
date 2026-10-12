@@ -1,0 +1,2783 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AeroFinance - Expense Tracker</title>
+    <!-- Chart.js for Visualizations -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Lucide Icons for Modern UI -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Custom Style Sheet -->
+    <link rel="stylesheet" href="expence.css">
+</head>
+<body>
+
+    <div class="app-layout">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="sidebar-brand">
+                <i data-lucide="trending-up" style="color: var(--primary); stroke-width: 2.5;"></i>
+                <span>AeroFinance</span>
+                <button class="menu-toggle" id="menuToggle" aria-label="Toggle menu">
+                    <i data-lucide="menu"></i>
+                </button>
+            </div>
+            
+            <nav class="sidebar-nav" id="sidebarNav">
+                <button class="nav-item active" data-tab="dashboard" id="tab-dashboard">
+                    <i data-lucide="layout-dashboard"></i>
+                    <span>Dashboard</span>
+                </button>
+                <button class="nav-item" data-tab="transactions" id="tab-transactions">
+                    <i data-lucide="arrow-left-right"></i>
+                    <span>Transactions</span>
+                </button>
+            </nav>
+            
+            <div class="sidebar-footer" id="sidebarFooter">
+                <button class="theme-btn" id="themeToggle" type="button">
+                    <i data-lucide="moon"></i>
+                    <span>Dark Mode</span>
+                </button>
+                
+                <a href="../44010425029 personal porfolio/44010425029_WebPortfolio.html" class="portfolio-link" id="portfolioLink">
+                    <i data-lucide="arrow-left"></i>
+                    <span>Back to Portfolio</span>
+                </a>
+
+                <!-- JSON/CSV Import Export Data Panel -->
+                <div class="data-panel-row">
+                    <button class="data-btn" id="exportJsonBtn" type="button" title="Export JSON backup">
+                        <i data-lucide="download"></i> JSON
+                    </button>
+                    <button class="data-btn" id="exportCsvBtn" type="button" title="Export CSV backup">
+                        <i data-lucide="file-text"></i> CSV
+                    </button>
+                </div>
+                <div class="data-panel-row">
+                    <button class="data-btn" id="importBtn" style="grid-column: span 2;" type="button">
+                        <i data-lucide="upload"></i> Import Backup
+                    </button>
+                </div>
+                <input type="file" id="importInput" accept=".json,.csv" style="display: none;">
+                
+                <button class="btn btn-secondary btn-danger" id="resetBtn" type="button" style="margin-top: 0.25rem; font-size: 0.8rem; padding: 0.5rem;">
+                    <i data-lucide="trash-2"></i>
+                    <span>Clear All Data</span>
+                </button>
+            </div>
+        </aside>
+        <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+        <!-- Main Workspace -->
+        <main class="main-panel">
+            <!-- Full Panel Loading Spinner for Async preparation -->
+            <div class="loading-overlay" id="mainLoader">
+                <div class="spinner"></div>
+            </div>
+
+            <!-- Header Section -->
+            <header class="main-header">
+                <div class="header-title-section">
+                    <h1 id="panelTitle">Dashboard</h1>
+                    <p id="panelSubtitle">Overview of your finances, tracking income and expenses.</p>
+                </div>
+                <div class="header-actions">
+                    <!-- Date Picker Filter Dropdown -->
+                    <div class="custom-range-inputs" id="customRangeInputs">
+                        <input type="date" id="startDate" class="custom-date-field">
+                        <span>to</span>
+                        <input type="date" id="endDate" class="custom-date-field">
+                    </div>
+                    <select id="dateFilterPreset" class="date-picker-dropdown">
+                        <option value="all">All Time</option>
+                        <option value="week">This Week</option>
+                        <option value="month">This Month</option>
+                        <option value="30days">Last 30 Days</option>
+                        <option value="custom">Custom Range</option>
+                    </select>
+
+                    <button class="btn btn-primary btn-squash" id="openAddModalBtn" type="button">
+                        <i data-lucide="plus"></i>
+                        <span>Add Transaction</span>
+                    </button>
+                </div>
+            </header>
+
+            <!-- Dashboard Tab View -->
+            <section class="section-wrapper active" id="dashboardTab">
+                <!-- Metrics Widget Grid -->
+                <div class="metrics-grid">
+                    <div class="card metric-card balance">
+                        <div class="metric-header">
+                            <span>TOTAL BALANCE</span>
+                            <div class="metric-icon-box">
+                                <i data-lucide="wallet"></i>
+                            </div>
+                        </div>
+                        <div class="metric-value" id="totalBalance">₹0.00</div>
+                        <div class="metric-trend" id="balanceTrend">
+                            <i data-lucide="minus"></i>
+                            <span>No change data</span>
+                        </div>
+                        <div class="account-breakdown" id="accountBreakdown">
+                            <!-- Populated dynamically: Cash, Bank, Credit Card balances -->
+                        </div>
+                    </div>
+                    
+                    <div class="card metric-card income">
+                        <div class="metric-header">
+                            <span>TOTAL INCOME</span>
+                            <div class="metric-icon-box">
+                                <i data-lucide="trending-up"></i>
+                            </div>
+                        </div>
+                        <div class="metric-value" id="totalIncome" style="color: var(--success)">₹0.00</div>
+                        <div class="metric-trend up" id="incomeTrend">
+                            <i data-lucide="plus-circle"></i>
+                            <span>Deposits logged</span>
+                        </div>
+                    </div>
+                    
+                    <div class="card metric-card expense">
+                        <div class="metric-header">
+                            <span>TOTAL EXPENSES</span>
+                            <div class="metric-icon-box">
+                                <i data-lucide="trending-down"></i>
+                            </div>
+                        </div>
+                        <div class="metric-value" id="totalExpense" style="color: var(--destructive)">₹0.00</div>
+                        <div class="metric-trend down" id="expenseTrend">
+                            <i data-lucide="minus-circle"></i>
+                            <span>Payments logged</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Main Dashboard Grid Split -->
+                <div class="dashboard-content-split">
+                    <!-- Left Charts Column -->
+                    <div class="dashboard-charts-column">
+                        <div class="charts-grid" style="grid-template-columns: 1fr;">
+                            <div class="card chart-card" style="height: 320px;">
+                                <h3>Income vs Expense</h3>
+                                <div class="chart-canvas-container">
+                                    <canvas id="comparisonChart"></canvas>
+                                </div>
+                            </div>
+                            
+                            <div class="card chart-card" style="height: 320px;">
+                                <h3>Expense Breakdown</h3>
+                                <div class="chart-canvas-container">
+                                    <canvas id="expenseChart"></canvas>
+                                </div>
+                            </div>
+
+                            <div class="card chart-card" style="height: 320px;">
+                                <h3>Monthly/Yearly Trend</h3>
+                                <div class="chart-canvas-container">
+                                    <canvas id="trendChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Column: Budgets & Webhook Simulators -->
+                    <div class="dashboard-side-column">
+                        <!-- Monthly Budgets Card -->
+                        <div class="card budget-card">
+                            <div class="budget-card-header">
+                                <h3>Monthly Budgets</h3>
+                                <button class="btn btn-secondary" id="openBudgetModalBtn" type="button" style="padding: 0.35rem 0.75rem; font-size: 0.75rem;">
+                                    <i data-lucide="settings" style="width: 12px; height: 12px;"></i> Set Limits
+                                </button>
+                            </div>
+                            <div class="budget-list" id="budgetList">
+                                <!-- Rendered dynamically -->
+                            </div>
+                        </div>
+
+                        <!-- n8n Automation Webhook Card -->
+                        <div class="card webhook-card">
+                            <div class="webhook-card-header">
+                                <h3>n8n Webhook Console</h3>
+                                <button class="btn btn-primary" id="simulateWebhookBtn" type="button" style="padding: 0.35rem 0.75rem; font-size: 0.75rem; background-color: #10b981; hover: opacity: 0.9;">
+                                    <i data-lucide="play" style="width:12px; height:12px;"></i> Scan Receipt
+                                </button>
+                            </div>
+                            <div style="margin-bottom: 0.75rem; display: flex; flex-direction: column; gap: 0.25rem;">
+                                <label for="webhookUrlInput" style="font-size: 0.75rem; font-weight: 600; color: var(--muted-foreground);">Webhook Endpoint URL:</label>
+                                <input type="url" id="webhookUrlInput" class="form-control" style="font-size: 0.75rem; padding: 0.35rem 0.625rem; font-family: var(--font-mono);" placeholder="https://primary-production.n8n.cloud/webhook/...">
+                            </div>
+                            <div class="terminal-console" id="terminalConsole">
+                                <div class="terminal-line info">AeroFinance API Console Sandbox...</div>
+                                <div class="terminal-line info">Enter your webhook URL above to connect receipt workflows.</div>
+                            </div>
+                        </div>
+                        <input type="file" id="webhookFileInput" accept="image/*" style="display: none;">
+                    </div>
+                </div>
+            </section>
+
+            <!-- Transactions Tab View -->
+            <section class="section-wrapper" id="transactionsTab">
+                <div class="card" style="padding: 1.5rem;">
+                    <!-- Table Search & Filter Toolbar -->
+                    <div class="transactions-header" style="flex-direction: column; gap: 1rem; align-items: stretch;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+                            <h3 class="table-title" style="margin: 0;">Recent Transactions</h3>
+                            <button class="btn btn-secondary btn-danger" id="bulkDeleteBtn" style="display: none; padding: 0.4rem 0.75rem; font-size: 0.75rem; align-items: center; gap: 0.35rem; border-radius: 6px;" type="button">
+                                <i data-lucide="trash-2" style="width: 13px; height: 13px;"></i>
+                                <span>Delete Selected (<span id="selectedCount">0</span>)</span>
+                            </button>
+                        </div>
+                        
+                        <div class="search-filter-controls" style="display: flex; flex-wrap: wrap; gap: 0.75rem; align-items: center; width: 100%;">
+                            <div class="search-wrapper" style="flex: 1; min-width: 180px;">
+                                <i data-lucide="search"></i>
+                                <input type="text" id="searchInput" class="search-input" placeholder="Search description/details...">
+                            </div>
+
+                            <div style="display: flex; align-items: center; gap: 0.35rem;">
+                                <label for="tableCategoryFilter" style="font-size: 0.75rem; font-weight: 600; color: var(--muted-foreground); white-space: nowrap;">Category:</label>
+                                <select id="tableCategoryFilter" class="form-control" style="font-size: 0.75rem; padding: 0.3rem 1.75rem 0.3rem 0.5rem; height: 32px; min-width: 130px; border-radius: 6px; cursor: pointer;">
+                                    <option value="all">All Categories</option>
+                                </select>
+                            </div>
+
+                            <div style="display: flex; align-items: center; gap: 0.35rem;">
+                                <input type="date" id="tableStartDate" class="form-control" style="font-size: 0.75rem; padding: 0.3rem 0.5rem; height: 32px; border-radius: 6px; width: 120px;" title="Start Date">
+                                <span style="font-size: 0.75rem; color: var(--muted-foreground);">to</span>
+                                <input type="date" id="tableEndDate" class="form-control" style="font-size: 0.75rem; padding: 0.3rem 0.5rem; height: 32px; border-radius: 6px; width: 120px;" title="End Date">
+                            </div>
+                            
+                            <div class="filter-btn-group" style="margin-left: auto;">
+                                <button class="filter-btn active" data-filter="all" type="button">All</button>
+                                <button class="filter-btn" data-filter="income" type="button">Incomes</button>
+                                <button class="filter-btn" data-filter="expense" type="button">Expenses</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Scrollable Table Container -->
+                    <div class="table-wrapper">
+                        <table class="txn-table">
+                            <thead>
+                                <tr>
+                                    <th style="width: 40px; text-align: center;"><input type="checkbox" id="selectAllTxns" style="cursor: pointer; width: 14px; height: 14px; vertical-align: middle;"></th>
+                                    <th class="sortable-header" data-sort="date" style="cursor: pointer; user-select: none;">Date <span class="sort-indicator" id="sort_date" style="margin-left: 0.2rem; font-size: 0.65rem; opacity: 0.8;">▼</span></th>
+                                    <th class="sortable-header" data-sort="category" style="cursor: pointer; user-select: none;">Category <span class="sort-indicator" id="sort_category" style="margin-left: 0.2rem; font-size: 0.65rem; opacity: 0.5;"></span></th>
+                                    <th>Note / Details</th>
+                                    <th>Type</th>
+                                    <th class="sortable-header" data-sort="amount" style="cursor: pointer; user-select: none;">Amount <span class="sort-indicator" id="sort_amount" style="margin-left: 0.2rem; font-size: 0.65rem; opacity: 0.5;"></span></th>
+                                    <th style="text-align: right; padding-right: 1.5rem;">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="transactionList">
+                                <!-- Rendered dynamically via javascript -->
+                            </tbody>
+                        </table>
+                    </div>
+                    <div id="tablePagination" style="margin-top: 1rem;"></div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Modal Form (Slide-in / Overlay with anticipative bounce easing) -->
+    <div class="modal-overlay" id="transactionModal">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h3 id="formTitle">Add Transaction</h3>
+                <button class="modal-close" id="closeModalBtn" type="button">&times;</button>
+            </div>
+            <form id="transactionForm">
+                <div class="modal-body">
+                    <input type="hidden" id="editId">
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="type">Transaction Type</label>
+                            <select id="type" class="form-control" required>
+                                <option value="expense">Expense</option>
+                                <option value="income">Income</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="amount">Amount (₹)</label>
+                            <input type="number" id="amount" class="form-control" min="0.01" step="0.01" required placeholder="0.00">
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="category">Category</label>
+                            <select id="category" class="form-control" required>
+                                <option value="Food">Food</option>
+                                <option value="Transport">Transport</option>
+                                <option value="Rent">Rent</option>
+                                <option value="Salary">Salary</option>
+                                <option value="Utilities">Utilities</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="account">Account / Wallet</label>
+                            <select id="account" class="form-control" required>
+                                <option value="Bank">Bank</option>
+                                <option value="Cash">Cash</option>
+                                <option value="Card">Credit Card</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="date">Transaction Date</label>
+                            <input type="date" id="date" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="note">Note / Description</label>
+                            <input type="text" id="note" class="form-control" maxlength="50" placeholder="E.g., Groceries, Uber, Salary credit">
+                        </div>
+                    </div>
+
+                    <!-- Receipt Attachment File Upload -->
+                    <div class="form-group" style="margin-top: 0.5rem; border-top: 1px dashed var(--border); padding-top: 0.75rem;">
+                        <label for="attachment">Receipt Image Attachment</label>
+                        <div class="file-input-preview-container">
+                            <div class="file-input-wrapper">
+                                <button type="button" class="btn btn-secondary" style="font-size: 0.8rem; padding: 0.5rem 0.75rem;">
+                                    <i data-lucide="image" style="width: 14px; height: 14px;"></i> Choose File
+                                </button>
+                                <input type="file" id="attachment" accept="image/*">
+                            </div>
+                            <img id="attachmentPreview" class="file-thumbnail-preview" src="" alt="Thumbnail preview">
+                            <button type="button" class="btn btn-secondary btn-danger" id="clearAttachmentBtn" style="display: none; padding: 0.5rem; border-radius: 4px;">
+                                <i data-lucide="x" style="width:14px; height:14px;"></i>
+                            </button>
+                        </div>
+                        <input type="hidden" id="attachmentBase64">
+                    </div>
+
+                    <!-- Recurring Transaction Toggle Switch -->
+                    <div class="toggle-switch-group" style="margin-top: 0.75rem; border-top: 1px dashed var(--border); padding-top: 0.75rem;">
+                        <div class="switch-label-desc">
+                            <span>Recurring Schedule</span>
+                            <small>Automatically process this item on date intervals</small>
+                        </div>
+                        <label class="switch-control">
+                            <input type="checkbox" id="recurringCheck">
+                            <span class="switch-slider"></span>
+                        </label>
+                    </div>
+                    
+                    <div class="form-group" id="frequencyGroup" style="display: none;">
+                        <label for="frequency">Interval Frequency</label>
+                        <select id="frequency" class="form-control">
+                            <option value="daily">Daily</option>
+                            <option value="weekly">Weekly</option>
+                            <option value="monthly">Monthly</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary btn-squash" id="cancelModalBtn">Cancel</button>
+                    <button type="submit" class="btn btn-primary btn-squash" id="submitBtn">Save Transaction</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Monthly Budgets Setup Modal -->
+    <div class="modal-overlay" id="budgetModal">
+        <div class="modal-container" style="max-width: 460px;">
+            <div class="modal-header">
+                <h3>Monthly Budget Limits</h3>
+                <button class="modal-close" id="closeBudgetModalBtn" type="button">&times;</button>
+            </div>
+            <form id="budgetForm">
+                <div class="modal-body">
+                    <p style="font-size: 0.85rem; color: var(--muted-foreground); margin-bottom: 1rem;">Set maximum monthly caps for each category. Set 0 or blank to remove caps.</p>
+                    <div class="budget-setup-grid" id="dynamicBudgetInputs">
+                        <!-- Filled dynamically based on categories in database -->
+                    </div>
+                </div>
+                
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary btn-squash" id="cancelBudgetModalBtn">Cancel</button>
+                    <button type="submit" class="btn btn-primary btn-squash">Save Budgets</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Receipt Image Attachment Lightbox Viewer -->
+    <div class="lightbox-overlay" id="lightboxOverlay">
+        <div class="lightbox-container">
+            <button class="lightbox-close" id="lightboxCloseBtn" type="button">&times;</button>
+            <img src="" id="lightboxImage" class="lightbox-image" alt="Receipt">
+            <div class="lightbox-caption" id="lightboxCaption">Transaction Receipt</div>
+        </div>
+    </div>
+
+    <!-- Toast Messaging Feedback Container -->
+    <div class="toast-container" id="toastContainer"></div>
+    <script>
+        // --- SECURITY & UTILITY HELPERS ---
+        // 1. Global unhandled promise rejection error boundary (Issue 27)
+        window.addEventListener('unhandledrejection', event => {
+            console.error('Unhandled promise rejection:', event.reason);
+            showToast("A background process encountered an error.", "error");
+        });
+
+        // 2. Production Logger separation (Issue 30)
+        var logger = {
+            isDev: false, // Set to true during debugging to enable logs
+            log: function() { if (this.isDev) console.log.apply(console, arguments); },
+            error: function() { console.error.apply(console, arguments); }
+        };
+        window.logger = logger;
+
+        // 3. XSS HTML escape utility (Issue 21)
+        function escapeHTML(str) {
+            if (!str) return '';
+            return String(str).replace(/[&<>'"]/g, 
+                tag => ({
+                    '&': '&amp;',
+                    '<': '&lt;',
+                    '>': '&gt;',
+                    "'": '&#39;',
+                    '"': '&quot;'
+                }[tag] || tag)
+            );
+        }
+        window.escapeHTML = escapeHTML;
+
+        // 4. Robust UUID generator replacing deprecated substr() (Issue 3)
+        function generateUUID() {
+            if (window.crypto && window.crypto.randomUUID) {
+                return window.crypto.randomUUID();
+            }
+            return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+                const r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
+                return v.toString(16);
+            });
+        }
+        window.generateUUID = generateUUID;
+
+        // 5. Image Compression utility for LocalStorage quota (Issue 7)
+        function compressImage(file, maxWidth = 600, maxHeight = 600, quality = 0.6) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = event => {
+                    const img = new Image();
+                    img.src = event.target.result;
+                    img.onload = () => {
+                        const canvas = document.createElement('canvas');
+                        let width = img.width;
+                        let height = img.height;
+
+                        if (width > height) {
+                            if (width > maxWidth) {
+                                height = Math.round((height * maxWidth) / width);
+                                width = maxWidth;
+                            }
+                        } else {
+                            if (height > maxHeight) {
+                                width = Math.round((width * maxHeight) / height);
+                                height = maxHeight;
+                            }
+                        }
+
+                        canvas.width = width;
+                        canvas.height = height;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0, width, height);
+                        
+                        // Compress to JPEG format to minimize size
+                        resolve(canvas.toDataURL('image/jpeg', quality));
+                    };
+                    img.onerror = err => reject(err);
+                };
+                reader.onerror = err => reject(err);
+            });
+        }
+
+        // 6. Debouncing helper for search inputs (Issue 20)
+        function debounce(func, wait = 250) {
+            let timeout;
+            return function(...args) {
+                clearTimeout(timeout);
+                timeout = setTimeout(() => func.apply(this, args), wait);
+            };
+        }
+
+        // 7. Accessible keyboard Modal Focus Trap helper (Issue 13)
+        function trapFocus(modalEl) {
+            const focusableElements = modalEl.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+            if (focusableElements.length === 0) return;
+            const firstElement = focusableElements[0];
+            const lastElement = focusableElements[focusableElements.length - 1];
+
+            modalEl.addEventListener('keydown', function(e) {
+                if (e.key !== 'Tab') return;
+                if (e.shiftKey) { // Shift + Tab
+                    if (document.activeElement === firstElement) {
+                        lastElement.focus();
+                        e.preventDefault();
+                    }
+                } else { // Tab
+                    if (document.activeElement === lastElement) {
+                        firstElement.focus();
+                        e.preventDefault();
+                    }
+                }
+            });
+        }
+
+        // 8. Safe Month Incrementor for boundary dates (Issue 4)
+        function advanceDate(date, frequency) {
+            const next = new Date(date);
+            if (frequency === 'daily') {
+                next.setDate(next.getDate() + 1);
+            } else if (frequency === 'weekly') {
+                next.setDate(next.getDate() + 7);
+            } else if (frequency === 'monthly') {
+                const currentDay = next.getDate();
+                next.setDate(1); // Set to start of month to avoid boundary skipping
+                next.setMonth(next.getMonth() + 1);
+                // Get last day of the new month
+                const lastDayOfNextMonth = new Date(next.getFullYear(), next.getMonth() + 1, 0).getDate();
+                next.setDate(Math.min(currentDay, lastDayOfNextMonth));
+            }
+            return next;
+        }
+
+        // --- DATA LAYER ABSTRACTION (Async dbService for server integration readiness) ---
+        const dbService = {
+            // Mock latency delay function (300ms)
+            delay: (ms = 300) => new Promise(resolve => setTimeout(resolve, ms)),
+
+            getTransactions: async function() {
+                await this.delay();
+                const data = localStorage.getItem('expenses_db');
+                const list = data ? JSON.parse(data) : [];
+                return list.map(t => {
+                    if (!t.account) t.account = 'Bank';
+                    return t;
+                });
+            },
+
+            saveTransactions: async function(txns) {
+                await this.delay();
+                localStorage.setItem('expenses_db', JSON.stringify(txns));
+                return true;
+            },
+
+            getBudgets: async function() {
+                await this.delay();
+                const data = localStorage.getItem('expenses_budgets');
+                const defaults = {
+                    'Food': 5000,
+                    'Transport': 2000,
+                    'Rent': 15000,
+                    'Salary': 0,
+                    'Utilities': 4000,
+                    'Other': 3000
+                };
+                return data ? JSON.parse(data) : defaults;
+            },
+
+            saveBudgets: async function(budgets) {
+                await this.delay();
+                localStorage.setItem('expenses_budgets', JSON.stringify(budgets));
+                return true;
+            }
+        };
+        window.dbService = dbService;
+
+        // --- GLOBAL APP STATES ---
+        let transactions = [];
+        window.transactions = transactions;
+        let expenseChartInstance = null;
+        let comparisonChartInstance = null;
+        let trendChartInstance = null;
+        let currentFilter = 'all';
+        let currentSearch = '';
+        let lastChartDataHash = ''; // Cache hash to avoid unnecessary rebuilding (Issue 17)
+        let activeTriggerButton = null; // Remembers opening button for focus restore (Issue 13)
+        let currentSortCol = 'date';
+        let currentSortDir = 'desc';
+
+        // Checkbox, undo actions, and pagination states (Issue 28)
+        let selectedTxnIds = [];
+        let lastDeletedTransactions = [];
+        let currentPage = 1;
+        const pageSize = 10;
+
+        // --- DOM CACHING & INITIALIZATION ---
+        const form = document.getElementById('transactionForm');
+        const listContainer = document.getElementById('transactionList');
+        const accountBreakdown = document.getElementById('accountBreakdown');
+        const resetBtn = document.getElementById('resetBtn');
+        const submitBtn = document.getElementById('submitBtn');
+        const cancelModalBtn = document.getElementById('cancelModalBtn');
+        const closeModalBtn = document.getElementById('closeModalBtn');
+        const openAddModalBtn = document.getElementById('openAddModalBtn');
+        const formTitle = document.getElementById('formTitle');
+        const themeToggle = document.getElementById('themeToggle');
+        const transactionModal = document.getElementById('transactionModal');
+        const mainLoader = document.getElementById('mainLoader');
+        const idInput = document.getElementById('editId');
+        const typeInput = document.getElementById('type');
+        const amountInput = document.getElementById('amount');
+        const categoryInput = document.getElementById('category');
+        const accountInput = document.getElementById('account');
+        const dateInput = document.getElementById('date');
+        const noteInput = document.getElementById('note');
+        const recurringCheck = document.getElementById('recurringCheck');
+        const frequencyGroup = document.getElementById('frequencyGroup');
+        const frequencyInput = document.getElementById('frequency');
+        const attachmentInput = document.getElementById('attachment');
+        const attachmentPreview = document.getElementById('attachmentPreview');
+        const clearAttachmentBtn = document.getElementById('clearAttachmentBtn');
+        const attachmentBase64 = document.getElementById('attachmentBase64');
+        const budgetModal = document.getElementById('budgetModal');
+        const budgetForm = document.getElementById('budgetForm');
+        const openBudgetModalBtn = document.getElementById('openBudgetModalBtn');
+        const closeBudgetModalBtn = document.getElementById('closeBudgetModalBtn');
+        const cancelBudgetModalBtn = document.getElementById('cancelBudgetModalBtn');
+        const dynamicBudgetInputs = document.getElementById('dynamicBudgetInputs');
+        const lightboxOverlay = document.getElementById('lightboxOverlay');
+        const lightboxCloseBtn = document.getElementById('lightboxCloseBtn');
+        const lightboxImage = document.getElementById('lightboxImage');
+        const lightboxCaption = document.getElementById('lightboxCaption');
+        const dateFilterPreset = document.getElementById('dateFilterPreset');
+        const customRangeInputs = document.getElementById('customRangeInputs');
+        const startDateInput = document.getElementById('startDate');
+        const endDateInput = document.getElementById('endDate');
+        const tabs = document.querySelectorAll('.nav-item');
+        const sections = document.querySelectorAll('.section-wrapper');
+        const panelTitle = document.getElementById('panelTitle');
+        const panelSubtitle = document.getElementById('panelSubtitle');
+        const menuToggle = document.getElementById('menuToggle');
+        const sidebarNav = document.getElementById('sidebarNav');
+        const sidebarFooter = document.getElementById('sidebarFooter');
+        const sidebarOverlay = document.getElementById('sidebarOverlay');
+        const exportJsonBtn = document.getElementById('exportJsonBtn');
+        const exportCsvBtn = document.getElementById('exportCsvBtn');
+        const importBtn = document.getElementById('importBtn');
+        const importInput = document.getElementById('importInput');
+        const searchInput = document.getElementById('searchInput');
+        const bulkDeleteBtn = document.getElementById('bulkDeleteBtn');
+        const selectedCount = document.getElementById('selectedCount');
+        const selectAllTxns = document.getElementById('selectAllTxns');
+        const tableCategoryFilter = document.getElementById('tableCategoryFilter');
+        const tableStartDateInput = document.getElementById('tableStartDate');
+        const tableEndDateInput = document.getElementById('tableEndDate');
+        const tablePagination = document.getElementById('tablePagination');
+        const filterBtns = document.querySelectorAll('.filter-btn');
+        const simulateWebhookBtn = document.getElementById('simulateWebhookBtn');
+        const webhookUrlInput = document.getElementById('webhookUrlInput');
+        const webhookFileInput = document.getElementById('webhookFileInput');
+
+        const categoryIcons = { 'Food': 'utensils', 'Transport': 'car', 'Rent': 'home', 'Salary': 'banknote', 'Utilities': 'zap', 'Other': 'help-circle' };
+        const categoryClasses = { 'Food': 'food', 'Transport': 'transport', 'Rent': 'rent', 'Salary': 'salary', 'Utilities': 'utilities', 'Other': 'other' };
+
+        function toggleLoader(show = false) {
+            mainLoader.classList.toggle('active', show);
+        }
+
+        function resetDefaultDate() {
+            dateInput.value = new Date().toLocaleDateString('en-CA');
+        }
+
+        async function initApp() {
+            toggleLoader(true);
+            try {
+                transactions = await dbService.getTransactions();
+                // Process recurring items before drawing interface (Issue 23: awaited)
+                await processRecurringTransactions();
+                await updateUI();
+                resetDefaultDate();
+                checkPortfolioPath();
+                initWebhookConfig();
+                
+                // Initialize keyboard tab focus traps (Issue 13)
+                trapFocus(transactionModal);
+                trapFocus(budgetModal);
+            } catch(e) {
+                logger.error("Failed to initialize app:", e);
+                showToast("Failed to initialize database.", "error");
+            } finally {
+                toggleLoader(false);
+            }
+        }
+
+        function checkPortfolioPath() {
+            const portLink = document.getElementById('portfolioLink');
+            if (portLink) {
+                // Set spelling-exact path to avoid breaking links
+                portLink.href = "../44010425029 personal porfolio/44010425029_WebPortfolio.html";
+                
+                // Show link only if user came directly from the portfolio section
+                const referrer = document.referrer.toLowerCase();
+                const isFromPortfolio = referrer.includes('44010425029_webportfolio.html') || 
+                                        referrer.includes('44010425029%20personal%20porfolio') ||
+                                        referrer.includes('44010425029 personal porfolio');
+                                        
+                if (isFromPortfolio) {
+                    portLink.style.display = 'flex'; // override display: none from CSS
+                }
+            }
+        }
+
+        function formatCurrency(amount) {
+            return `₹${Math.abs(amount).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+        }
+
+        // Display toast feedback - capped to max 3 notifications (Issue 11, Issue 28 action callbacks)
+        function showToast(message, type = 'success', action = null) {
+            const container = document.getElementById('toastContainer');
+            
+            while (container.children.length >= 3) {
+                container.removeChild(container.firstChild);
+            }
+            
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            const icon = type === 'success' ? 'check-circle' : 'alert-circle';
+            toast.innerHTML = `
+                <i data-lucide="${icon}" class="toast-${type}"></i>
+                <div class="toast-content" style="display: flex; align-items: center; justify-content: space-between; width: 100%; gap: 0.5rem;">
+                    <span>${escapeHTML(message)}</span>
+                </div>
+            `;
+            
+            if (action && action.text && action.callback) {
+                const actionBtn = document.createElement('button');
+                actionBtn.textContent = action.text;
+                actionBtn.className = 'toast-action-btn';
+                actionBtn.style.cssText = `
+                    background: none;
+                    border: none;
+                    color: var(--primary);
+                    font-size: 0.75rem;
+                    font-weight: 600;
+                    text-decoration: underline;
+                    cursor: pointer;
+                    padding: 0;
+                    margin-left: auto;
+                    white-space: nowrap;
+                `;
+                actionBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    action.callback();
+                    if (toast.parentNode === container) {
+                        container.removeChild(toast);
+                    }
+                });
+                toast.querySelector('.toast-content').appendChild(actionBtn);
+            }
+            
+            container.appendChild(toast);
+            lucide.createIcons();
+            
+            const duration = action ? 5000 : 3000;
+            
+            setTimeout(() => {
+                if (toast.parentNode === container) {
+                    toast.style.animation = 'slideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) reverse forwards';
+                    setTimeout(() => {
+                        if (toast.parentNode === container) {
+                            container.removeChild(toast);
+                        }
+                    }, 300);
+                }
+            }, duration);
+        }
+
+        // --- RECURRING TRANSACTIONS LOGIC ---
+        recurringCheck.addEventListener('change', () => {
+            if (recurringCheck.checked) {
+                frequencyGroup.style.display = 'block';
+            } else {
+                frequencyGroup.style.display = 'none';
+            }
+        });
+
+        // Background processor for automated schedules (Issue 4, Issue 19)
+        async function processRecurringTransactions() {
+            let updated = false;
+            let newInstances = [];
+            const todayStr = new Date().toLocaleDateString('en-CA');
+            const todayDate = new Date(todayStr);
+
+            for (let i = 0; i < transactions.length; i++) {
+                const txn = transactions[i];
+                if (txn.isRecurring && txn.nextDueDate) {
+                    let nextDue = new Date(txn.nextDueDate);
+                    
+                    // Loop limit to prevent infinite loops (Issue 4)
+                    let safetyCounter = 0;
+                    while (nextDue <= todayDate && safetyCounter++ < 100) {
+                        const occurrenceDate = nextDue.toLocaleDateString('en-CA');
+                        
+                        // Spawn instance
+                        const instance = {
+                            id: generateUUID(),
+                            type: txn.type,
+                            amount: txn.amount,
+                            category: txn.category,
+                            date: occurrenceDate,
+                            note: `${txn.note} (Auto-Recurring)`,
+                            isRecurring: false,
+                            attachment: txn.attachment || '' // Copy attachment if uploaded
+                        };
+                        newInstances.push(instance);
+                        
+                        // Increment using safe date calculator
+                        nextDue = advanceDate(nextDue.toLocaleDateString('en-CA'), txn.frequency);
+                    }
+                    
+                    if (safetyCounter > 0) {
+                        txn.nextDueDate = nextDue.toLocaleDateString('en-CA');
+                        updated = true;
+                    }
+                }
+            }
+
+            // Batched database write (Issue 19)
+            if (newInstances.length > 0) {
+                transactions.push(...newInstances);
+                await dbService.saveTransactions(transactions);
+            }
+        }
+
+        // --- RECEIPT IMAGE ATTACHMENT LOGIC ---
+        attachmentInput.addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            // Strict MIME and Extension Validation (Issue 22)
+            const allowedExtensions = ['png', 'jpg', 'jpeg', 'webp', 'gif'];
+            const ext = file.name.split('.').pop().toLowerCase();
+            if (!allowedExtensions.includes(ext) || !file.type.startsWith('image/')) {
+                showToast("Invalid format. Supported: PNG, JPG, WEBP, GIF.", "error");
+                attachmentInput.value = '';
+                return;
+            }
+
+            toggleLoader(true);
+            try {
+                // Client-side compression to prevent storage quota issues (Issue 7)
+                const compressedBase64 = await compressImage(file);
+                attachmentBase64.value = compressedBase64;
+                attachmentPreview.src = compressedBase64;
+                attachmentPreview.classList.add('active');
+                clearAttachmentBtn.style.display = 'block';
+                showToast("Receipt optimized and ready!");
+            } catch(err) {
+                logger.error(err);
+                showToast("Failed to process attachment image.", "error");
+                resetAttachmentFields();
+            } finally {
+                toggleLoader(false);
+            }
+        });
+
+        // Reset receipt attachments (Issue 14)
+        function resetAttachmentFields() {
+            attachmentInput.value = '';
+            attachmentBase64.value = '';
+            attachmentPreview.src = '';
+            attachmentPreview.classList.remove('active');
+            clearAttachmentBtn.style.display = 'none';
+        }
+
+        clearAttachmentBtn.addEventListener('click', resetAttachmentFields);
+
+        // --- BUDGETS ENGINE (DYNAMIC CATEGORIES) ---
+        // Dynamically build budget input elements in configuration modal (Issue 24)
+        async function renderBudgetFieldsInModal() {
+            const budgets = await dbService.getBudgets();
+            dynamicBudgetInputs.innerHTML = '';
+            
+            // Build unique categories list
+            const transactionCategories = transactions.map(t => t.category);
+            const allCategories = [...new Set([...transactionCategories, 'Food', 'Transport', 'Rent', 'Utilities', 'Other'])];
+            const spendingCategories = allCategories.filter(cat => cat !== 'Salary');
+            
+            spendingCategories.forEach(cat => {
+                const limitVal = budgets[cat] !== undefined ? budgets[cat] : '';
+                const formGroupHtml = `
+                    <div class="form-group">
+                        <label for="budget${cat}">${escapeHTML(cat)} Cap (₹)</label>
+                        <input type="number" id="budget${cat}" class="form-control budget-limit-input" data-category="${cat}" min="0" value="${limitVal}" placeholder="No limit">
+                    </div>
+                `;
+                dynamicBudgetInputs.insertAdjacentHTML('beforeend', formGroupHtml);
+            });
+        }
+
+        openBudgetModalBtn.addEventListener('click', async (e) => {
+            activeTriggerButton = e.currentTarget; // Remember trigger button
+            await renderBudgetFieldsInModal();
+            budgetModal.classList.add('active');
+            
+            // Focus first input (Issue 13)
+            setTimeout(() => {
+                dynamicBudgetInputs.querySelector('input')?.focus();
+            }, 150);
+        });
+
+        function closeBudgetModal() {
+            budgetModal.classList.remove('active');
+            budgetForm.reset();
+            // Restore focus (Issue 13)
+            if (activeTriggerButton) activeTriggerButton.focus();
+        }
+
+        closeBudgetModalBtn.addEventListener('click', closeBudgetModal);
+        cancelBudgetModalBtn.addEventListener('click', closeBudgetModal);
+        budgetModal.addEventListener('click', (e) => {
+            if (e.target === budgetModal) closeBudgetModal();
+        });
+
+        budgetForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            toggleLoader(true);
+            
+            const newBudgets = {};
+            const inputElements = document.querySelectorAll('.budget-limit-input');
+            inputElements.forEach(inp => {
+                const cat = inp.getAttribute('data-category');
+                const val = parseFloat(inp.value) || 0;
+                newBudgets[cat] = val;
+            });
+
+            try {
+                await dbService.saveBudgets(newBudgets);
+                showToast("Monthly Budgets updated!");
+                closeBudgetModal();
+                await updateUI();
+            } catch(err) {
+                logger.error(err);
+                showToast("Failed to save budgets.", "error");
+            } finally {
+                toggleLoader(false);
+            }
+        });
+
+        // Render Budgets Progress track gauges with dynamic categories & capped overflows (Issue 6, Issue 24)
+        async function renderBudgetsList() {
+            const budgets = await dbService.getBudgets();
+            const container = document.getElementById('budgetList');
+            container.innerHTML = '';
+
+            const currentMonthStr = new Date().toLocaleDateString('en-CA').substring(0, 7); // "YYYY-MM"
+            
+            // Sum expenses for current month
+            const monthlyExpenses = transactions.filter(t => 
+                t.type === 'expense' && 
+                t.date.substring(0, 7) === currentMonthStr
+            ).reduce((acc, curr) => {
+                acc[curr.category] = (acc[curr.category] || 0) + curr.amount;
+                return acc;
+            }, {});
+
+            // Collect category limits
+            const transactionCategories = transactions.map(t => t.category);
+            const allCategories = [...new Set([...transactionCategories, 'Food', 'Transport', 'Rent', 'Utilities', 'Other'])];
+            const spendingCategories = allCategories.filter(cat => cat !== 'Salary');
+
+            spendingCategories.forEach(cat => {
+                const limit = budgets[cat] || 0;
+                const spent = monthlyExpenses[cat] || 0;
+                
+                // Only hide non-standard categories when they have no limit and no expenses
+                const isDefaultCategory = ['Food', 'Transport', 'Rent', 'Utilities', 'Other'].includes(cat);
+                if (!isDefaultCategory && limit === 0 && spent === 0) return;
+
+                const percent = limit > 0 ? (spent / limit) * 100 : 0;
+                
+                // Progress bar fill capped at 100% (Issue 6)
+                const clampedPercent = Math.min(100, percent).toFixed(0);
+
+                let fillClass = '';
+                if (percent >= 90) {
+                    fillClass = 'danger';
+                } else if (percent >= 70) {
+                    fillClass = 'warning';
+                }
+
+                const icon = categoryIcons[cat] || 'help-circle';
+                const itemDomId = `progress${cat}`; // e.g. progressFood, progressTransport, etc. (prevents duplicate ID with modal input)
+
+                const budgetHtml = `
+                    <div class="budget-item" id="${itemDomId}">
+                        <div class="budget-item-info">
+                            <span class="budget-item-label">
+                                <i data-lucide="${icon}" style="width:14px; height:14px; color: var(--primary);"></i>
+                                ${escapeHTML(cat)}
+                            </span>
+                            <span>${formatCurrency(spent)} / ${limit > 0 ? formatCurrency(limit) : 'No Cap'} ${limit > 0 ? '(' + percent.toFixed(0) + '%)' : ''}</span>
+                        </div>
+                        <div class="budget-progress-track">
+                            <div class="budget-progress-fill ${fillClass}" style="width: ${clampedPercent}%;"></div>
+                        </div>
+                    </div>
+                `;
+                container.insertAdjacentHTML('beforeend', budgetHtml);
+            });
+            lucide.createIcons();
+        }
+
+        // --- DATA BACKUP IMPORT EXPORT WITH STRICT VALIDATION ---
+        // JSON Export (with URL revocation to resolve memory leaks)
+        exportJsonBtn.addEventListener('click', () => {
+            const jsonStr = JSON.stringify(transactions, null, 2);
+            const blob = new Blob([jsonStr], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'aerofinance_transactions_backup.json';
+            link.click();
+            showToast("Backup exported to JSON!");
+            setTimeout(() => { URL.revokeObjectURL(url); }, 1000); // Free object URL memory
+        });
+
+        // CSV Export (with URL revocation to resolve memory leaks)
+        exportCsvBtn.addEventListener('click', () => {
+            const headers = ['Date', 'Category', 'Note', 'Type', 'Amount', 'Recurring', 'Frequency', 'Account'];
+            const rows = transactions.map(t => [
+                t.date,
+                t.category,
+                `"${t.note.replace(/"/g, '""')}"`,
+                t.type,
+                t.amount,
+                t.isRecurring ? 'Yes' : 'No',
+                t.frequency || 'N/A',
+                t.account || 'Bank'
+            ]);
+            
+            const csvContent = [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'aerofinance_transactions.csv';
+            link.click();
+            showToast("Transactions exported to CSV!");
+            setTimeout(() => { URL.revokeObjectURL(url); }, 1000); // Free object URL memory
+        });
+
+        // Import Backup Validation (Issue 29)
+        function validateImportData(data) {
+            if (!Array.isArray(data)) return false;
+            for (const t of data) {
+                if (!t.id || !t.type || !t.amount || !t.category || !t.date) {
+                    return false;
+                }
+                if (t.type !== 'income' && t.type !== 'expense') return false;
+                const amt = parseFloat(t.amount);
+                if (isNaN(amt) || amt <= 0) return false;
+            }
+            return true;
+        }
+
+        // RFC-4180 compliant CSV Parser (Issue 28)
+        function parseCSV(text) {
+            const lines = [];
+            let row = [""];
+            let inQuotes = false;
+            for (let i = 0; i < text.length; i++) {
+                const char = text[i];
+                const nextChar = text[i+1];
+                if (char === '"') {
+                    if (inQuotes && nextChar === '"') {
+                        row[row.length - 1] += '"';
+                        i++; // skip escaped quote
+                    } else {
+                        inQuotes = !inQuotes;
+                    }
+                } else if (char === ',' && !inQuotes) {
+                    row.push("");
+                } else if ((char === '\r' || char === '\n') && !inQuotes) {
+                    if (char === '\r' && nextChar === '\n') {
+                        i++;
+                    }
+                    if (row.length > 1 || row[0] !== "") {
+                        lines.push(row);
+                    }
+                    row = [""];
+                } else {
+                    row[row.length - 1] += char;
+                }
+            }
+            if (row.length > 1 || row[0] !== "") {
+                lines.push(row);
+            }
+            return lines;
+        }
+
+        // CSV mapping and auto-classification handler (Issue 28)
+        function processCSVImport(text) {
+            const rows = parseCSV(text);
+            if (rows.length < 2) throw new Error("CSV file must contain a header and at least one data row.");
+            
+            const headers = rows[0].map(h => h.toLowerCase().trim().replace(/['"_\s-]/g, ''));
+            
+            // Map header indexes
+            const dateIdx = headers.findIndex(h => h.includes('date'));
+            const categoryIdx = headers.findIndex(h => h.includes('category'));
+            const noteIdx = headers.findIndex(h => h.includes('note') || h.includes('description') || h.includes('narration') || h.includes('particular') || h.includes('remark'));
+            const typeIdx = headers.findIndex(h => h.includes('type') || h.includes('crdr') || h.includes('creditdebit'));
+            const amountIdx = headers.findIndex(h => h.includes('amount') || h.includes('value') || h.includes('sum'));
+            
+            const debitIdx = headers.findIndex(h => h.includes('debit') || h.includes('withdrawal') || h.includes('payment') || h.includes('spent') || h.includes('dr'));
+            const creditIdx = headers.findIndex(h => h.includes('credit') || h.includes('deposit') || h.includes('received') || h.includes('cr'));
+            const accountIdx = headers.findIndex(h => h.includes('account') || h.includes('wallet') || h.includes('bank'));
+
+            if (dateIdx === -1) throw new Error("Could not find Date column.");
+            if (amountIdx === -1 && debitIdx === -1 && creditIdx === -1) throw new Error("Could not find Amount, Debit, or Credit column.");
+
+            const imported = [];
+
+            for (let i = 1; i < rows.length; i++) {
+                const row = rows[i].map(r => r.trim());
+                if (row.length === 0 || (row.length === 1 && row[0] === "")) continue;
+
+                // 1. Parse Date (format normalization)
+                const rawDate = row[dateIdx];
+                if (!rawDate) continue;
+                let parsedDate = '';
+                try {
+                    if (rawDate.includes('/')) {
+                        const parts = rawDate.split('/');
+                        if (parts.length === 3) {
+                            let day = parts[0];
+                            let month = parts[1];
+                            let year = parts[2];
+                            if (day.length === 4) { // YYYY/MM/DD
+                                parsedDate = `${day}-${month.padStart(2, '0')}-${parts[2].padStart(2, '0')}`;
+                            } else { // DD/MM/YYYY
+                                parsedDate = `${year.padStart(4, '20')}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+                            }
+                        }
+                    }
+                    if (!parsedDate || isNaN(new Date(parsedDate).getTime())) {
+                        const d = new Date(rawDate);
+                        if (!isNaN(d.getTime())) {
+                            parsedDate = d.toLocaleDateString('en-CA');
+                        } else {
+                            parsedDate = new Date().toLocaleDateString('en-CA'); // Fallback
+                        }
+                    }
+                } catch(e) {
+                    parsedDate = new Date().toLocaleDateString('en-CA');
+                }
+
+                // 2. Parse Description
+                const note = noteIdx !== -1 ? row[noteIdx] : 'CSV Statement Import';
+                const cleanNote = note.replace(/^["']|["']$/g, ''); // strip outer quotes
+
+                // 3. Determine Amount and Type
+                let amount = 0;
+                let type = 'expense';
+
+                if (debitIdx !== -1 && row[debitIdx] && parseFloat(row[debitIdx]) > 0) {
+                    amount = parseFloat(row[debitIdx]);
+                    type = 'expense';
+                } else if (creditIdx !== -1 && row[creditIdx] && parseFloat(row[creditIdx]) > 0) {
+                    amount = parseFloat(row[creditIdx]);
+                    type = 'income';
+                } else if (amountIdx !== -1) {
+                    let rawAmt = row[amountIdx].replace(/[^\d.-]/g, '');
+                    let val = parseFloat(rawAmt);
+                    if (!isNaN(val)) {
+                        if (val < 0) {
+                            amount = Math.abs(val);
+                            type = 'expense';
+                        } else {
+                            amount = val;
+                            type = 'expense'; // default positive amounts to expense unless CR indicated
+                            if (typeIdx !== -1 && row[typeIdx]) {
+                                const tVal = row[typeIdx].toLowerCase();
+                                if (tVal.includes('cr') || tVal.includes('credit') || tVal.includes('inc') || tVal.includes('dep') || tVal.includes('inbound')) {
+                                    type = 'income';
+                                }
+                            }
+                        }
+                    }
+                }
+
+                if (isNaN(amount) || amount <= 0) continue;
+
+                // 4. Auto-classify Category based on description keywords
+                let category = 'Other';
+                if (categoryIdx !== -1 && row[categoryIdx]) {
+                    const catVal = row[categoryIdx].toLowerCase();
+                    const matched = ['food', 'transport', 'rent', 'salary', 'utilities', 'other'].find(c => catVal.includes(c));
+                    if (matched) {
+                        category = matched.charAt(0).toUpperCase() + matched.slice(1);
+                    }
+                } else {
+                    const desc = cleanNote.toLowerCase();
+                    if (/swiggy|zomato|restaurant|cafe|hotel|grocery|supermarket|mart|food|dining|pizza|bake|subway|mcdonald|starbucks/i.test(desc)) {
+                        category = 'Food';
+                    } else if (/uber|ola|cab|metro|train|bus|fuel|petrol|shell|parking|transit|auto|rapido|irctc/i.test(desc)) {
+                        category = 'Transport';
+                    } else if (/salary|allowance|dividend|payroll|direct deposit|employer|bonus|interest/i.test(desc)) {
+                        category = 'Salary';
+                    } else if (/rent|landlord|housing|lease/i.test(desc)) {
+                        category = 'Rent';
+                    } else if (/electricity|power|water|gas|bill|internet|wifi|telecom|phone|recharge|jio|airtel|tataplay/i.test(desc)) {
+                        category = 'Utilities';
+                    }
+                }
+
+                // 5. Account Mapping
+                let account = 'Bank';
+                if (accountIdx !== -1 && row[accountIdx]) {
+                    const accVal = row[accountIdx].toLowerCase();
+                    if (accVal.includes('cash')) account = 'Cash';
+                    else if (accVal.includes('card') || accVal.includes('credit')) account = 'Card';
+                }
+
+                const newTxn = {
+                    id: generateUUID(),
+                    type: type,
+                    amount: amount,
+                    category: category,
+                    account: account,
+                    date: parsedDate,
+                    note: cleanNote,
+                    isRecurring: false,
+                    attachment: ''
+                };
+
+                // Deduplicate: check if transaction already exists in local database
+                const isDuplicate = transactions.some(t => 
+                    t.date === newTxn.date &&
+                    Math.abs(t.amount - newTxn.amount) < 0.01 &&
+                    t.type === newTxn.type &&
+                    t.account === newTxn.account &&
+                    t.note === newTxn.note
+                );
+
+                if (!isDuplicate) {
+                    imported.push(newTxn);
+                }
+            }
+
+            return imported;
+        }
+
+        importBtn.addEventListener('click', () => importInput.click());
+
+        importInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = async function(evt) {
+                toggleLoader(true);
+                try {
+                    const filename = file.name.toLowerCase();
+                    if (filename.endsWith('.json')) {
+                        const imported = JSON.parse(evt.target.result);
+                        if (validateImportData(imported)) {
+                            // JSON Backup Restore: overwrite
+                            transactions = imported.map(t => {
+                                if (!t.account) t.account = 'Bank';
+                                return t;
+                            });
+                            await dbService.saveTransactions(transactions);
+                            await updateUI();
+                            showToast("JSON Backup restored successfully!");
+                        } else {
+                            showToast("Malformed backup file structure. Import aborted.", "error");
+                        }
+                    } else if (filename.endsWith('.csv')) {
+                        const imported = processCSVImport(evt.target.result);
+                        if (imported.length > 0) {
+                            // CSV Statement Import: append
+                            transactions.push(...imported);
+                            await dbService.saveTransactions(transactions);
+                            await updateUI();
+                            showToast(`CSV Statement imported! Added ${imported.length} new transactions.`);
+                        } else {
+                            showToast("No new transactions found in CSV.", "warning");
+                        }
+                    } else {
+                        showToast("Unsupported file format.", "error");
+                    }
+                } catch(err) {
+                    logger.error(err);
+                    showToast("Failed to parse import file: " + err.message, "error");
+                } finally {
+                    toggleLoader(false);
+                    importInput.value = ''; // Reset input element
+                }
+            };
+            reader.readAsText(file);
+        });
+
+        // --- DATE FILTER PRESETS & RANGE VALIDATION ---
+        dateFilterPreset.addEventListener('change', () => {
+            if (dateFilterPreset.value === 'custom') {
+                customRangeInputs.classList.add('active');
+            } else {
+                customRangeInputs.classList.remove('active');
+                updateUI();
+            }
+        });
+
+        // Validate custom start date is not after end date (Issue 12)
+        function validateDateRange() {
+            if (startDateInput.value && endDateInput.value) {
+                if (new Date(startDateInput.value) > new Date(endDateInput.value)) {
+                    showToast("Start date cannot be after end date.", "error");
+                    endDateInput.value = startDateInput.value;
+                }
+            }
+        }
+
+        startDateInput.addEventListener('change', () => {
+            validateDateRange();
+            updateUI();
+        });
+        endDateInput.addEventListener('change', () => {
+            validateDateRange();
+            updateUI();
+        });
+
+        // Core filter utility standard CA local formatting (Issue 26)
+        function getFilteredTransactionsByDate(list) {
+            const preset = dateFilterPreset.value;
+            if (preset === 'all') return list;
+
+            const today = new Date();
+            let start = new Date();
+            let end = new Date();
+
+            if (preset === 'week') {
+                const day = today.getDay();
+                const diff = today.getDate() - day + (day === 0 ? -6 : 1);
+                start = new Date(today.setDate(diff));
+                start.setHours(0,0,0,0);
+                end = new Date(start);
+                end.setDate(start.getDate() + 6);
+                end.setHours(23,59,59,999);
+            } else if (preset === 'month') {
+                start = new Date(today.getFullYear(), today.getMonth(), 1);
+                end = new Date(today.getFullYear(), today.getMonth() + 1, 0, 23, 59, 59, 999);
+            } else if (preset === '30days') {
+                start.setDate(today.getDate() - 30);
+                start.setHours(0,0,0,0);
+                end.setHours(23,59,59,999);
+            } else if (preset === 'custom') {
+                const startVal = startDateInput.value;
+                const endVal = endDateInput.value;
+                if (!startVal || !endVal) return list;
+                start = new Date(startVal);
+                start.setHours(0,0,0,0);
+                end = new Date(endVal);
+                end.setHours(23,59,59,999);
+            }
+
+            return list.filter(t => {
+                const tDate = new Date(t.date);
+                return tDate >= start && tDate <= end;
+            });
+        }
+
+        // Search & type filters (Date filter runs first) (Issue 5, Issue 28 additions)
+        function getFilteredTransactions() {
+            // 1. Filter by dates first (using sidebar preset date range)
+            let list = getFilteredTransactionsByDate(transactions);
+
+            // 2. Apply inline table date range filters if set (direct table filters) (Issue 28)
+            if (tableStartDateInput && tableStartDateInput.value) {
+                const startLimit = new Date(tableStartDateInput.value + 'T00:00:00');
+                list = list.filter(t => new Date(t.date + 'T00:00:00') >= startLimit);
+            }
+            if (tableEndDateInput && tableEndDateInput.value) {
+                const endLimit = new Date(tableEndDateInput.value + 'T23:59:59');
+                list = list.filter(t => new Date(t.date + 'T00:00:00') <= endLimit);
+            }
+
+            // 3. Filter by dynamic table category dropdown (Issue 28)
+            if (tableCategoryFilter && tableCategoryFilter.value !== 'all') {
+                list = list.filter(t => t.category === tableCategoryFilter.value);
+            }
+
+            // 4. Filter by multi-keyword search input (Issue 28)
+            if (currentSearch) {
+                const keywords = currentSearch.split(/\s+/).filter(k => k.length > 0);
+                if (keywords.length > 0) {
+                    list = list.filter(t => {
+                        const noteLower = (t.note || '').toLowerCase();
+                        const catLower = (t.category || '').toLowerCase();
+                        const accLower = (t.account || 'bank').toLowerCase();
+                        return keywords.every(k => 
+                            noteLower.includes(k) || 
+                            catLower.includes(k) || 
+                            accLower.includes(k)
+                        );
+                    });
+                }
+            }
+
+            // 5. Filter by transaction type
+            if (currentFilter !== 'all') {
+                list = list.filter(t => t.type === currentFilter);
+            }
+
+            return list;
+        }
+
+        // --- n8n WEBHOOK INTEGRATION CHANNEL (Real request) ---
+        function initWebhookConfig() {
+            const savedUrl = localStorage.getItem('aerofinance_webhook_url');
+            if (savedUrl) {
+                webhookUrlInput.value = savedUrl;
+            }
+        }
+
+        webhookUrlInput.addEventListener('input', () => {
+            localStorage.setItem('aerofinance_webhook_url', webhookUrlInput.value.trim());
+        });
+
+        simulateWebhookBtn.addEventListener('click', () => {
+            const url = webhookUrlInput.value.trim();
+            if (!url) {
+                showToast("Please enter a valid Webhook URL first.", "error");
+                return;
+            }
+            webhookFileInput.click();
+        });
+
+        webhookFileInput.addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            
+            // Strict MIME and Extension Validation (Issue 22)
+            const allowedExtensions = ['png', 'jpg', 'jpeg', 'webp', 'gif'];
+            const ext = file.name.split('.').pop().toLowerCase();
+            if (!allowedExtensions.includes(ext) || !file.type.startsWith('image/')) {
+                showToast("Invalid format. Supported: PNG, JPG, WEBP, GIF.", "error");
+                webhookFileInput.value = '';
+                return;
+            }
+
+            const url = webhookUrlInput.value.trim();
+            toggleLoader(true);
+            try {
+                // Compress image before webhook dispatch to guard network bandwidth and localStorage quota (Issue 7)
+                const compressedBase64 = await compressImage(file);
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        image: compressedBase64,
+                        filename: file.name,
+                        timestamp: new Date().toISOString()
+                    })
+                });
+
+                if (response.ok) {
+                    const text = await response.text();
+                    let data = null;
+                    try {
+                        data = JSON.parse(text);
+                    } catch(err) {
+                        // Not a JSON response
+                    }
+
+                    if (data && typeof data === 'object') {
+                        if (data.amount && (data.type === 'expense' || data.type === 'income')) {
+                            const newTxn = {
+                                id: data.id || generateUUID(),
+                                type: data.type,
+                                amount: parseFloat(data.amount),
+                                category: data.category || 'Other',
+                                date: data.date || new Date().toLocaleDateString('en-CA'),
+                                note: data.note || `Webhook Import (${file.name})`,
+                                isRecurring: false,
+                                attachment: compressedBase64
+                            };
+
+                                // Check for existing duplicates (Issue 1 - Check ID and identical transaction metadata)
+                                const hasDuplicateId = transactions.some(t => t.id === newTxn.id);
+                                const hasDuplicateContent = transactions.some(t => 
+                                    t.amount === newTxn.amount &&
+                                    t.type === newTxn.type &&
+                                    t.category === newTxn.category &&
+                                    t.date === newTxn.date &&
+                                    t.note === newTxn.note
+                                );
+
+                                if (hasDuplicateId || hasDuplicateContent) {
+                                    showToast("Duplicate transaction detected.", "error");
+                                    return;
+                                }
+
+                                transactions.push(newTxn);
+                                await dbService.saveTransactions(transactions);
+                                showToast("Transaction parsed & added!");
+                                await updateUI();
+                            } else {
+                                showToast("Webhook trigger successful!");
+                            }
+                        } else {
+                            showToast("Webhook trigger successful!");
+                        }
+                    } else {
+                        showToast("Webhook connection failed.", "error");
+                    }
+            } catch(err) {
+                showToast("Failed to connect to webhook URL.", "error");
+            } finally {
+                toggleLoader(false);
+                webhookFileInput.value = '';
+            }
+        });
+
+        // --- THEME ENGINE INITIALIZATION ---
+        const THEME_KEY = 'expense_theme';
+
+        function applyTheme(theme) {
+            document.documentElement.setAttribute('data-theme', theme);
+            const icon = theme === 'dark' ? 'sun' : 'moon';
+            const labelText = theme === 'dark' ? 'Light Mode' : 'Dark Mode';
+            
+            themeToggle.innerHTML = `
+                <i data-lucide="${icon}"></i>
+                <span>${labelText}</span>
+            `;
+            lucide.createIcons();
+            
+            // Adjust Chart.js base fonts
+            Chart.defaults.color = theme === 'dark' ? '#a1a1aa' : '#64748b';
+            Chart.defaults.borderColor = theme === 'dark' ? '#27272a' : '#e2e8f0';
+            
+            // Force re-render of charts on theme change
+            lastChartDataHash = ''; 
+            renderCharts();
+        }
+
+        function initTheme() {
+            const saved = localStorage.getItem(THEME_KEY);
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            applyTheme(saved || (prefersDark ? 'dark' : 'light'));
+        }
+
+        themeToggle.addEventListener('click', () => {
+            const current = document.documentElement.getAttribute('data-theme');
+            const next = current === 'dark' ? 'light' : 'dark';
+            localStorage.setItem(THEME_KEY, next);
+            applyTheme(next);
+        });
+
+        // --- MODAL WINDOW CONTROLS ---
+        function openModal(isEdit = false) {
+            transactionModal.classList.add('active');
+            if (!isEdit) {
+                form.reset();
+                resetFormState();
+                resetDefaultDate();
+                resetAttachmentFields();
+            }
+            // Dynamic focus allocation (Issue 13)
+            setTimeout(() => {
+                amountInput.focus();
+            }, 150);
+        }
+
+        function closeModal() {
+            transactionModal.classList.remove('active');
+            resetFormState();
+            form.reset();
+            resetDefaultDate();
+            resetAttachmentFields();
+            // Restore focus (Issue 13)
+            if (activeTriggerButton) activeTriggerButton.focus();
+        }
+
+        function resetFormState() {
+            idInput.value = '';
+            formTitle.textContent = 'Add Transaction';
+            submitBtn.textContent = 'Save Transaction';
+            frequencyGroup.style.display = 'none';
+        }
+
+        openAddModalBtn.addEventListener('click', (e) => {
+            activeTriggerButton = e.currentTarget;
+            openModal(false);
+        });
+        closeModalBtn.addEventListener('click', closeModal);
+        cancelModalBtn.addEventListener('click', closeModal);
+
+        transactionModal.addEventListener('click', (e) => {
+            if (e.target === transactionModal) {
+                closeModal();
+            }
+        });
+
+        // --- VIEW NAVIGATION ENGINES ---
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                const targetTab = tab.getAttribute('data-tab');
+                
+                tabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                
+                sections.forEach(sec => {
+                    if (sec.id === `${targetTab}Tab`) {
+                        sec.classList.add('active');
+                    } else {
+                        sec.classList.remove('active');
+                    }
+                });
+
+                if (targetTab === 'dashboard') {
+                    panelTitle.textContent = 'Dashboard';
+                    panelSubtitle.textContent = 'Overview of your finances, tracking income and expenses.';
+                } else if (targetTab === 'transactions') {
+                    panelTitle.textContent = 'Transactions';
+                    panelSubtitle.textContent = 'Full record of your items, deposits, and payments.';
+                }
+                
+                if (window.innerWidth <= 768) {
+                    sidebarNav.classList.remove('active');
+                    sidebarFooter.classList.remove('active');
+                    document.querySelector('.sidebar').classList.remove('active');
+                }
+            });
+        });
+
+        // Mobile drawer togglers (Issue 9)
+        menuToggle.addEventListener('click', () => {
+            sidebarNav.classList.toggle('active');
+            sidebarFooter.classList.toggle('active');
+            document.querySelector('.sidebar').classList.toggle('active');
+        });
+
+        sidebarOverlay.addEventListener('click', () => {
+            sidebarNav.classList.remove('active');
+            sidebarFooter.classList.remove('active');
+            document.querySelector('.sidebar').classList.remove('active');
+        });
+
+        // --- TRANSACTION MUTATION LOGIC ---
+        amountInput.addEventListener('keydown', (e) => {
+            if (['e', 'E', '+', '-'].includes(e.key)) {
+                e.preventDefault();
+            }
+        });
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            toggleLoader(true);
+            
+            // Decimal format validations (Issue 8)
+            const amountVal = amountInput.value.trim();
+            if (!/^\d+(\.\d{1,2})?$/.test(amountVal)) {
+                showToast("Please enter a valid positive decimal value.", "error");
+                toggleLoader(false);
+                return;
+            }
+
+            const amount = parseFloat(amountVal);
+            if (amount <= 0 || isNaN(amount) || !isFinite(amount)) {
+                showToast('Please enter a valid amount greater than zero.', 'error');
+                toggleLoader(false);
+                return;
+            }
+
+            // Calculation for next recurring due date
+            let nextDue = '';
+            if (recurringCheck.checked) {
+                const txnDate = dateInput.value;
+                nextDue = advanceDate(txnDate, frequencyInput.value).toLocaleDateString('en-CA');
+            }
+
+            const transactionData = {
+                type: typeInput.value,
+                amount: amount,
+                category: categoryInput.value,
+                account: accountInput.value,
+                date: dateInput.value,
+                note: noteInput.value.trim() || 'No description',
+                isRecurring: recurringCheck.checked,
+                frequency: recurringCheck.checked ? frequencyInput.value : 'none',
+                nextDueDate: nextDue,
+                attachment: attachmentBase64.value || ''
+            };
+
+            const editingId = idInput.value;
+
+            try {
+                if (editingId) {
+                    // Update Transaction with ID existence validation (Issue 25)
+                    const index = transactions.findIndex(t => t.id === editingId);
+                    if (index !== -1) {
+                        transactions[index] = { ...transactionData, id: editingId };
+                        showToast('Transaction updated successfully!');
+                    } else {
+                        showToast('Error: Transaction not found.', 'error');
+                        toggleLoader(false);
+                        return;
+                    }
+                } else {
+                    // Create Transaction
+                    const newTransaction = {
+                        ...transactionData,
+                        id: generateUUID()
+                    };
+                    transactions.push(newTransaction);
+                    showToast('Transaction added successfully!');
+                }
+
+                // Check for budget overspend limits (Issue 28)
+                if (transactionData.type === 'expense') {
+                    const budgets = await dbService.getBudgets();
+                    const cap = budgets[transactionData.category] || 0;
+                    if (cap > 0) {
+                        const txnDate = new Date(transactionData.date + 'T00:00:00');
+                        const year = txnDate.getFullYear();
+                        const month = txnDate.getMonth();
+                        
+                        const monthlySpent = transactions.filter(t => {
+                            if (t.type !== 'expense' || t.category !== transactionData.category) return false;
+                            const d = new Date(t.date + 'T00:00:00');
+                            return d.getFullYear() === year && d.getMonth() === month;
+                        }).reduce((sum, t) => sum + t.amount, 0);
+
+                        if (monthlySpent > cap) {
+                            const overspend = monthlySpent - cap;
+                            setTimeout(() => {
+                                showToast(`Warning: ${transactionData.category} budget exceeded by ${formatCurrency(overspend)}!`, "error");
+                            }, 500);
+                        }
+                    }
+                }
+
+                await dbService.saveTransactions(transactions);
+                await updateUI();
+                closeModal();
+            } catch(e) {
+                logger.error(e);
+                showToast('Failed to save transaction data.', 'error');
+            } finally {
+                toggleLoader(false);
+            }
+        });
+
+        // Delegated table row actions (Edit / Delete / Lightbox)
+        listContainer.addEventListener('click', async (e) => {
+            const target = e.target;
+            
+            // Lightbox receipt view trigger
+            const receiptIcon = target.closest('.receipt-badge');
+            if (receiptIcon) {
+                const id = receiptIcon.getAttribute('data-attachment');
+                const txn = transactions.find(t => t.id === id);
+                if (txn && txn.attachment) {
+                    lightboxImage.src = txn.attachment;
+                    lightboxCaption.textContent = `${escapeHTML(txn.note)} (Amount: ${formatCurrency(txn.amount)})`;
+                    lightboxOverlay.classList.add('active');
+                }
+                return;
+            }
+
+            const button = target.closest('button');
+            if (!button) return;
+
+            const id = button.getAttribute('data-id');
+
+            if (button.classList.contains('delete-btn')) {
+                toggleLoader(true);
+                try {
+                    const txnToDelete = transactions.find(t => t.id === id);
+                    if (txnToDelete) {
+                        lastDeletedTransactions = [txnToDelete];
+                        transactions = transactions.filter(t => t.id !== id);
+                        selectedTxnIds = selectedTxnIds.filter(x => x !== id); // clear from selection
+                        await dbService.saveTransactions(transactions);
+                        await updateUI();
+                        showToast('Transaction deleted.', 'warning', { text: 'Undo', callback: undoLastDelete });
+                    }
+                } catch(err) {
+                    logger.error(err);
+                    showToast('Failed to delete transaction.', 'error');
+                } finally {
+                    toggleLoader(false);
+                }
+            }
+
+            if (button.classList.contains('edit-btn')) {
+                activeTriggerButton = button;
+                const txn = transactions.find(t => t.id === id);
+                if (txn) {
+                    idInput.value = txn.id;
+                    typeInput.value = txn.type;
+                    amountInput.value = txn.amount;
+                    categoryInput.value = txn.category;
+                    accountInput.value = txn.account || 'Bank';
+                    dateInput.value = txn.date;
+                    noteInput.value = txn.note.includes('via n8n') ? txn.note : (txn.note === 'No description' ? '' : txn.note);
+                    
+                    // Set recurring values (Issue 10)
+                    recurringCheck.checked = txn.isRecurring || false;
+                    if (txn.isRecurring) {
+                        frequencyGroup.style.display = 'block';
+                        frequencyInput.value = txn.frequency || 'monthly';
+                    } else {
+                        frequencyGroup.style.display = 'none';
+                    }
+
+                    // Set receipt values (Issue 14)
+                    if (txn.attachment) {
+                        attachmentBase64.value = txn.attachment;
+                        attachmentPreview.src = txn.attachment;
+                        attachmentPreview.classList.add('active');
+                        clearAttachmentBtn.style.display = 'block';
+                    } else {
+                        resetAttachmentFields();
+                    }
+
+                    formTitle.textContent = 'Edit Transaction';
+                    submitBtn.textContent = 'Update Transaction';
+                    openModal(true);
+                }
+            }
+        });
+
+        // Undo last deletion function (Issue 28)
+        async function undoLastDelete() {
+            if (lastDeletedTransactions.length === 0) return;
+            
+            transactions.push(...lastDeletedTransactions);
+            lastDeletedTransactions = [];
+            
+            await dbService.saveTransactions(transactions);
+            await updateUI();
+            showToast("Deletions undone successfully!");
+        }
+
+        // Master select-all checkbox toggles current page checkboxes (Issue 28)
+        if (selectAllTxns) {
+            selectAllTxns.addEventListener('change', (e) => {
+                const currentTxns = getFilteredTransactions();
+                const sorted = sortTransactions(currentTxns);
+                const paginated = sorted.slice((currentPage - 1) * pageSize, currentPage * pageSize);
+                const isChecked = selectAllTxns.checked;
+                
+                paginated.forEach(t => {
+                    if (isChecked) {
+                        if (!selectedTxnIds.includes(t.id)) {
+                            selectedTxnIds.push(t.id);
+                        }
+                    } else {
+                        selectedTxnIds = selectedTxnIds.filter(x => x !== t.id);
+                    }
+                });
+
+                // Update DOM checks directly
+                document.querySelectorAll('.row-select-checkbox').forEach(cb => {
+                    const id = cb.getAttribute('data-id');
+                    cb.checked = selectedTxnIds.includes(id);
+                });
+
+                updateBulkDeleteBar();
+            });
+        }
+
+        // Checkbox row select delegator (Issue 28)
+        listContainer.addEventListener('change', (e) => {
+            if (e.target.classList.contains('row-select-checkbox')) {
+                const id = e.target.getAttribute('data-id');
+                if (e.target.checked) {
+                    if (!selectedTxnIds.includes(id)) {
+                        selectedTxnIds.push(id);
+                    }
+                } else {
+                    selectedTxnIds = selectedTxnIds.filter(x => x !== id);
+                }
+                updateSelectAllCheckbox();
+                updateBulkDeleteBar();
+            }
+        });
+
+        // Bulk delete click action handler (Issue 28)
+        if (bulkDeleteBtn) {
+            bulkDeleteBtn.addEventListener('click', async () => {
+                if (selectedTxnIds.length === 0) return;
+                toggleLoader(true);
+                try {
+                    lastDeletedTransactions = transactions.filter(t => selectedTxnIds.includes(t.id));
+                    transactions = transactions.filter(t => !selectedTxnIds.includes(t.id));
+                    const deletedCountVal = selectedTxnIds.length;
+                    
+                    selectedTxnIds = []; // reset selections
+                    
+                    await dbService.saveTransactions(transactions);
+                    await updateUI();
+                    
+                    showToast(`Deleted ${deletedCountVal} transactions.`, 'warning', { text: 'Undo', callback: undoLastDelete });
+                } catch(err) {
+                    logger.error(err);
+                    showToast('Failed to delete transactions.', 'error');
+                } finally {
+                    toggleLoader(false);
+                }
+            });
+        }
+
+        // Lightbox close listener clearing source memory to prevent leak (Issue 2)
+        function closeLightbox() {
+            lightboxOverlay.classList.remove('active');
+            setTimeout(() => { 
+                lightboxImage.removeAttribute('src'); // Fully free DOM element reference
+            }, 300);
+        }
+
+        lightboxCloseBtn.addEventListener('click', closeLightbox);
+        lightboxOverlay.addEventListener('click', (e) => {
+            if (e.target === lightboxOverlay) closeLightbox();
+        });
+
+        // Nuclear reset database handler
+        resetBtn.addEventListener('click', async () => {
+            if (confirm('CRITICAL WARNING: This will permanently wipe all local transaction data. Proceed?')) {
+                toggleLoader(true);
+                try {
+                    transactions = [];
+                    await dbService.saveTransactions(transactions);
+                    await updateUI();
+                    showToast('All transaction records cleared.', 'error');
+                } catch(e) {
+                    logger.error(e);
+                    showToast('Failed to reset database.', 'error');
+                } finally {
+                    toggleLoader(false);
+                }
+            }
+        });
+
+        // Search inputs debounced with 250ms (Issue 20, Issue 28 page reset)
+        searchInput.addEventListener('input', debounce((e) => {
+            currentSearch = e.target.value.toLowerCase().trim();
+            currentPage = 1;
+            selectedTxnIds = [];
+            updateSelectAllCheckbox();
+            renderList();
+        }, 250));
+
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                filterBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentFilter = btn.getAttribute('data-filter');
+                currentPage = 1;
+                selectedTxnIds = [];
+                updateSelectAllCheckbox();
+                renderList();
+            });
+        });
+
+        // Table category and date filters (Issue 28)
+        tableCategoryFilter.addEventListener('change', () => {
+            currentPage = 1;
+            selectedTxnIds = [];
+            updateSelectAllCheckbox();
+            renderList();
+        });
+
+        tableStartDateInput.addEventListener('change', () => {
+            currentPage = 1;
+            selectedTxnIds = [];
+            updateSelectAllCheckbox();
+            renderList();
+        });
+
+        tableEndDateInput.addEventListener('change', () => {
+            currentPage = 1;
+            selectedTxnIds = [];
+            updateSelectAllCheckbox();
+            renderList();
+        });
+
+        // Table Column Header Click Listeners for sorting (Issue 28)
+        document.querySelectorAll('.sortable-header').forEach(header => {
+            header.addEventListener('click', () => {
+                const col = header.getAttribute('data-sort');
+                if (currentSortCol === col) {
+                    currentSortDir = currentSortDir === 'desc' ? 'asc' : 'desc';
+                } else {
+                    currentSortCol = col;
+                    currentSortDir = col === 'category' ? 'asc' : 'desc'; // default string to asc, numeric/date to desc
+                }
+                
+                // Update header indicator icons
+                document.querySelectorAll('.sort-indicator').forEach(indicator => {
+                    const parent = indicator.parentElement;
+                    const parentCol = parent.getAttribute('data-sort');
+                    if (parentCol === currentSortCol) {
+                        indicator.textContent = currentSortDir === 'asc' ? '▲' : '▼';
+                        indicator.style.opacity = '0.8';
+                    } else {
+                        indicator.textContent = '';
+                        indicator.style.opacity = '0.5';
+                    }
+                });
+
+                renderList();
+            });
+        });
+
+        // Populate category options inside table filter dropdown dynamically (Issue 28)
+        function renderTableCategoryOptions() {
+            if (!tableCategoryFilter) return;
+            const defaultCats = ['Food', 'Transport', 'Rent', 'Salary', 'Utilities', 'Other'];
+            const customCats = transactions.reduce((acc, curr) => {
+                if (curr.category && !acc.includes(curr.category)) {
+                    acc.push(curr.category);
+                }
+                return acc;
+            }, []);
+            const allCats = Array.from(new Set([...defaultCats, ...customCats])).sort();
+            const prevVal = tableCategoryFilter.value || 'all';
+            
+            tableCategoryFilter.innerHTML = `
+                <option value="all">All Categories</option>
+                ${allCats.map(cat => `<option value="${cat}">${escapeHTML(cat)}</option>`).join('')}
+            `;
+            tableCategoryFilter.value = prevVal;
+        }
+
+        // --- DRAW RENDERING PIPELINES ---
+        async function updateUI() {
+            renderTableCategoryOptions();
+            await renderMetrics();
+            renderList();
+            await renderBudgetsList();
+            await renderBudgetFieldsInModal(); // Render setup fields on startup & changes (Issue 24)
+            renderCharts();
+            lucide.createIcons();
+        }
+
+
+
+        // Update select-all checkbox based on current page selections (Issue 28)
+        function updateSelectAllCheckbox() {
+            if (!selectAllTxns) return;
+            const currentTxns = getFilteredTransactions();
+            
+            // Slice current page items
+            const sorted = sortTransactions(currentTxns);
+            const paginated = sorted.slice((currentPage - 1) * pageSize, currentPage * pageSize);
+            
+            if (paginated.length === 0) {
+                selectAllTxns.checked = false;
+                selectAllTxns.indeterminate = false;
+                return;
+            }
+
+            const pageIds = paginated.map(t => t.id);
+            const selectedOnPage = pageIds.filter(id => selectedTxnIds.includes(id));
+
+            if (selectedOnPage.length === 0) {
+                selectAllTxns.checked = false;
+                selectAllTxns.indeterminate = false;
+            } else if (selectedOnPage.length === pageIds.length) {
+                selectAllTxns.checked = true;
+                selectAllTxns.indeterminate = false;
+            } else {
+                selectAllTxns.checked = false;
+                selectAllTxns.indeterminate = true; // Partial select
+            }
+        }
+
+        // Update visibility and text of bulk delete button (Issue 28)
+        function updateBulkDeleteBar() {
+            if (!bulkDeleteBtn || !selectedCount) return;
+            if (selectedTxnIds.length > 0) {
+                selectedCount.textContent = selectedTxnIds.length;
+                bulkDeleteBtn.style.display = 'inline-flex';
+            } else {
+                bulkDeleteBtn.style.display = 'none';
+            }
+        }
+
+        // Render dynamic pagination buttons bar (Issue 28)
+        function renderPaginationControls(totalItems) {
+            if (!tablePagination) return;
+            const totalPages = Math.ceil(totalItems / pageSize) || 1;
+            
+            if (totalItems === 0) {
+                tablePagination.innerHTML = '';
+                return;
+            }
+            
+            const startIdx = (currentPage - 1) * pageSize + 1;
+            const endIdx = Math.min(currentPage * pageSize, totalItems);
+            
+            let pageButtonsHtml = '';
+            
+            const maxVisible = 5;
+            let startPage = Math.max(1, currentPage - 2);
+            let endPage = Math.min(totalPages, startPage + maxVisible - 1);
+            if (endPage - startPage < maxVisible - 1) {
+                startPage = Math.max(1, endPage - maxVisible + 1);
+            }
+            
+            pageButtonsHtml += `
+                <button class="page-btn ${currentPage === 1 ? 'disabled' : ''}" onclick="goToPage(1)" ${currentPage === 1 ? 'disabled' : ''} title="First Page">
+                    <i data-lucide="chevrons-left" style="width: 13px; height: 13px; vertical-align: middle;"></i>
+                </button>
+                <button class="page-btn ${currentPage === 1 ? 'disabled' : ''}" onclick="goToPage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''} title="Previous Page">
+                    <i data-lucide="chevron-left" style="width: 13px; height: 13px; vertical-align: middle;"></i>
+                </button>
+            `;
+            
+            for (let p = startPage; p <= endPage; p++) {
+                pageButtonsHtml += `
+                    <button class="page-btn ${p === currentPage ? 'active' : ''}" onclick="goToPage(${p})">
+                        ${p}
+                    </button>
+                `;
+            }
+            
+            pageButtonsHtml += `
+                <button class="page-btn ${currentPage === totalPages ? 'disabled' : ''}" onclick="goToPage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''} title="Next Page">
+                    <i data-lucide="chevron-right" style="width: 13px; height: 13px; vertical-align: middle;"></i>
+                </button>
+                <button class="page-btn ${currentPage === totalPages ? 'disabled' : ''}" onclick="goToPage(${totalPages})" ${currentPage === totalPages ? 'disabled' : ''} title="Last Page">
+                    <i data-lucide="chevrons-right" style="width: 13px; height: 13px; vertical-align: middle;"></i>
+                </button>
+            `;
+            
+            tablePagination.innerHTML = `
+                <div class="pagination-wrapper" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem;">
+                    <div class="pagination-info" style="font-size: 0.75rem; color: var(--muted-foreground); font-weight: 500;">
+                        Showing <span style="color: var(--foreground); font-weight: 600;">${startIdx}</span> to <span style="color: var(--foreground); font-weight: 600;">${endIdx}</span> of <span style="color: var(--foreground); font-weight: 600;">${totalItems}</span> transactions
+                    </div>
+                    <div class="pagination-actions" style="display: flex; gap: 0.25rem;">
+                        ${pageButtonsHtml}
+                    </div>
+                </div>
+            `;
+            
+            lucide.createIcons();
+        }
+
+        window.goToPage = function(page) {
+            currentPage = page;
+            updateSelectAllCheckbox();
+            renderList();
+        };
+
+        // Render table list with paint-optimized DocumentFragments & XSS sanitization (Issue 18, Issue 21)
+        function renderList() {
+            listContainer.innerHTML = '';
+            
+            const filtered = getFilteredTransactions();
+
+            if (filtered.length === 0) {
+                listContainer.innerHTML = `
+                    <tr>
+                        <td colspan="7">
+                            <div class="empty-state">
+                                <i data-lucide="folder-open"></i>
+                                <h4>No transaction records found</h4>
+                                <p>Try adjusting your date filters or search queries.</p>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+                if (tablePagination) tablePagination.innerHTML = '';
+                updateSelectAllCheckbox();
+                updateBulkDeleteBar();
+                lucide.createIcons();
+                return;
+            }
+
+            const sorted = sortTransactions(filtered);
+            
+            // Bounds check for current page
+            const totalPages = Math.ceil(sorted.length / pageSize) || 1;
+            if (currentPage > totalPages) currentPage = totalPages;
+            if (currentPage < 1) currentPage = 1;
+
+            const paginated = sorted.slice((currentPage - 1) * pageSize, currentPage * pageSize);
+            const fragment = document.createDocumentFragment(); // Paint optimization (Issue 18)
+
+            paginated.forEach(txn => {
+                const tr = document.createElement('tr');
+                const badgeClass = txn.type === 'income' ? 'badge-income' : 'badge-expense';
+                const amountClass = txn.type === 'income' ? 'income' : 'expense';
+                const amountPrefix = txn.type === 'income' ? '+' : '-';
+                
+                const iconName = categoryIcons[txn.category] || 'help-circle';
+                const iconClass = categoryClasses[txn.category] || 'other';
+
+                // Paperclip icon indicator
+                const attachmentIcon = txn.attachment ? `
+                    <span class="receipt-badge" data-attachment="${txn.id}" title="View receipt attachment">
+                        <i data-lucide="paperclip" style="width:13px; height:13px;"></i>
+                    </span>
+                ` : '';
+
+                // Recurring indicator badge
+                const recurringBadge = txn.isRecurring ? `
+                    <span style="color: var(--primary); margin-left: 0.25rem;" title="Recurring Schedule: ${txn.frequency}">
+                        <i data-lucide="refresh-cw" style="width:11px; height:11px; display:inline-block; vertical-align:middle; animation: spin 10s linear infinite;"></i>
+                    </span>
+                ` : '';
+
+                // Account badge layout
+                const accountNameText = txn.account === 'Card' ? 'Credit Card' : (txn.account || 'Bank');
+                const accountIcon = txn.account === 'Card' ? 'credit-card' : (txn.account === 'Cash' ? 'coins' : 'landmark');
+                const accountBadge = `
+                    <span class="badge" style="background-color: var(--secondary); border: 1px solid var(--border); color: var(--foreground); font-size: 0.7rem; margin-left: 0.25rem; font-weight: 500;">
+                        <i data-lucide="${accountIcon}" style="width:10px; height:10px; margin-right: 0.2rem; display: inline-block; vertical-align: middle;"></i>
+                        ${accountNameText}
+                    </span>
+                `;
+
+                const isChecked = selectedTxnIds.includes(txn.id) ? 'checked' : '';
+
+                // Text rendered safely via escapeHTML() mapping (Issue 21)
+                tr.innerHTML = `
+                    <td style="text-align: center;">
+                        <input type="checkbox" class="row-select-checkbox" data-id="${txn.id}" ${isChecked} style="cursor: pointer; width: 14px; height: 14px; vertical-align: middle;">
+                    </td>
+                    <td style="font-weight: 500; white-space: nowrap;">${escapeHTML(txn.date)}</td>
+                    <td>
+                        <div class="category-cell">
+                            <span class="category-icon ${iconClass}">
+                                <i data-lucide="${iconName}"></i>
+                            </span>
+                            <span>${escapeHTML(txn.category)}</span>
+                        </div>
+                    </td>
+                    <td style="color: var(--muted-foreground); max-width: 220px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                        <span>${escapeHTML(txn.note)}</span>
+                        ${attachmentIcon}
+                    </td>
+                    <td>
+                        <div style="display: flex; gap: 0.25rem; align-items: center;">
+                            <span class="badge ${badgeClass}">
+                                <i data-lucide="${txn.type === 'income' ? 'arrow-up-right' : 'arrow-down-left'}" style="width:12px; height:12px;"></i>
+                                ${txn.type.charAt(0).toUpperCase() + txn.type.slice(1)}
+                                ${recurringBadge}
+                            </span>
+                            ${accountBadge}
+                        </div>
+                    </td>
+                    <td class="amount-text ${amountClass}">${amountPrefix}${formatCurrency(txn.amount)}</td>
+                    <td style="text-align: right; padding-right: 1.5rem;">
+                        <div class="table-actions" style="justify-content: flex-end;">
+                            <button class="action-btn edit-btn" data-id="${txn.id}" title="Edit transaction" type="button">
+                                <i data-lucide="edit-3"></i>
+                            </button>
+                            <button class="action-btn delete-btn" data-id="${txn.id}" title="Delete transaction" type="button">
+                                <i data-lucide="trash-2"></i>
+                            </button>
+                        </div>
+                    </td>
+                `;
+                fragment.appendChild(tr);
+            });
+            
+            listContainer.appendChild(fragment);
+            
+            // Build pagination links
+            renderPaginationControls(sorted.length);
+            
+            // Sync status variables
+            updateSelectAllCheckbox();
+            updateBulkDeleteBar();
+            
+            lucide.createIcons();
+        }
+
+        async function renderMetrics() {
+            const filtered = getFilteredTransactionsByDate(transactions);
+
+            const totals = filtered.reduce((acc, curr) => {
+                if (curr.type === 'income') {
+                    acc.income += curr.amount;
+                } else {
+                    acc.expense += curr.amount;
+                }
+                return acc;
+            }, { income: 0, expense: 0 });
+
+            // Calculate range-filtered balance for trend node
+            const rangeBalance = totals.income - totals.expense;
+
+            // Calculate actual cumulative balances of all time for accounts (Issue 28)
+            const accountTotals = transactions.reduce((acc, curr) => {
+                const amt = curr.amount;
+                const account = curr.account || 'Bank';
+                if (curr.type === 'income') {
+                    acc[account] = (acc[account] || 0) + amt;
+                } else {
+                    acc[account] = (acc[account] || 0) - amt;
+                }
+                return acc;
+            }, { Bank: 0, Cash: 0, Card: 0 });
+
+            const cumulativeTotal = (accountTotals.Bank || 0) + (accountTotals.Cash || 0) + (accountTotals.Card || 0);
+
+            document.getElementById('totalIncome').textContent = formatCurrency(totals.income);
+            document.getElementById('totalExpense').textContent = formatCurrency(totals.expense);
+            
+            const balNode = document.getElementById('totalBalance');
+            balNode.textContent = formatCurrency(cumulativeTotal);
+            
+            if (cumulativeTotal > 0) {
+                balNode.style.color = 'var(--success)';
+            } else if (cumulativeTotal < 0) {
+                balNode.style.color = 'var(--destructive)';
+            } else {
+                balNode.style.color = 'var(--foreground)';
+            }
+
+            // Populate per-account breakdown list with icons
+            const accounts = [
+                { name: 'Bank', key: 'Bank', icon: 'landmark', color: 'var(--success)' },
+                { name: 'Cash', key: 'Cash', icon: 'coins', color: 'var(--foreground)' },
+                { name: 'Credit Card', key: 'Card', icon: 'credit-card', color: 'var(--destructive)' }
+            ];
+
+            accountBreakdown.innerHTML = accounts.map(acc => {
+                const bal = accountTotals[acc.key] || 0;
+                const formatted = formatCurrency(bal);
+                let balColor = 'var(--foreground)';
+                if (bal > 0) balColor = 'var(--success)';
+                else if (bal < 0) balColor = 'var(--destructive)';
+
+                return `
+                    <div class="account-item">
+                        <span class="account-name">
+                            <i data-lucide="${acc.icon}" style="width: 12px; height: 12px; color: ${acc.color};"></i>
+                            ${acc.name}
+                        </span>
+                        <span class="account-val" style="color: ${balColor};">${formatted}</span>
+                    </div>
+                `;
+            }).join('');
+
+            const trendNode = document.getElementById('balanceTrend');
+            if (filtered.length === 0) {
+                trendNode.className = 'metric-trend neutral';
+                trendNode.innerHTML = `<i data-lucide="minus"></i> <span>No range data</span>`;
+            } else if (rangeBalance >= 0) {
+                const ratio = totals.income > 0 ? ((rangeBalance / totals.income) * 100).toFixed(0) : 100;
+                trendNode.className = 'metric-trend up';
+                trendNode.innerHTML = `<i data-lucide="trending-up"></i> <span>Savings rate: ${ratio}%</span>`;
+            } else {
+                trendNode.className = 'metric-trend down';
+                trendNode.innerHTML = `<i data-lucide="trending-down"></i> <span>Deficit of ${formatCurrency(Math.abs(rangeBalance))}</span>`;
+            }
+        }
+
+        const doughnutCenterTextPlugin = {
+            id: 'doughnutCenterText',
+            beforeDraw: function(chart) {
+                if (chart.config.type !== 'doughnut') return;
+                const width = chart.width;
+                const height = chart.height;
+                const ctx = chart.ctx;
+                ctx.restore();
+                
+                const fontSize = (height / 190).toFixed(2);
+                ctx.textBaseline = "middle";
+                
+                const total = chart.data.datasets[0].data.reduce((a, b) => a + b, 0);
+                const text = formatCurrency(total);
+                
+                const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+                
+                // Draw Label
+                ctx.font = `600 ${(fontSize * 0.45).toFixed(2)}em var(--font-sans)`;
+                ctx.fillStyle = isDark ? '#a1a1aa' : '#64748b';
+                const textX = Math.round((width - ctx.measureText("Expenses").width) / 2);
+                const textY = height / 2 - 10;
+                ctx.fillText("Expenses", textX, textY);
+                
+                // Draw Value
+                ctx.font = `bold ${(fontSize * 0.82).toFixed(2)}em var(--font-heading)`;
+                ctx.fillStyle = isDark ? '#fafafa' : '#09090b';
+                const valX = Math.round((width - ctx.measureText(text).width) / 2);
+                const valY = height / 2 + 15;
+                ctx.fillText(text, valX, valY);
+                
+                ctx.save();
+            }
+        };
+
+        // Charts Rendering with cache checks to avoid rebuild bottlenecks (Issue 17)
+        function renderCharts() {
+            const dashboardTxns = getFilteredTransactionsByDate(transactions);
+            
+            // Performance caching check (Issue 17)
+            const hashString = dashboardTxns.map(t => `${t.id}-${t.amount}-${t.date}`).join('|') + '|' + document.documentElement.getAttribute('data-theme');
+            if (hashString === lastChartDataHash && expenseChartInstance && comparisonChartInstance && trendChartInstance) {
+                return; // Prevent redraws when data stays identical
+            }
+            lastChartDataHash = hashString;
+
+            // Destroy existing charts to prevent overlaps
+            if (expenseChartInstance) expenseChartInstance.destroy();
+            if (comparisonChartInstance) comparisonChartInstance.destroy();
+            if (trendChartInstance) trendChartInstance.destroy();
+
+            const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+            const gridBorderColor = isDark ? 'rgba(255, 255, 255, 0.06)' : 'rgba(9, 9, 11, 0.06)';
+            const labelColor = isDark ? '#a1a1aa' : '#64748b';
+
+            const expenseCtx = document.getElementById('expenseChart').getContext('2d');
+            const comparisonCtx = document.getElementById('comparisonChart').getContext('2d');
+            const trendCtx = document.getElementById('trendChart').getContext('2d');
+
+            // --- CHART 1: Expense Breakdown (Donut) ---
+            const expensesOnly = dashboardTxns.filter(t => t.type === 'expense');
+            const categoryTotals = expensesOnly.reduce((acc, curr) => {
+                acc[curr.category] = (acc[curr.category] || 0) + curr.amount;
+                return acc;
+            }, {});
+
+            const categories = Object.keys(categoryTotals);
+            const categoryValues = Object.values(categoryTotals);
+
+            // Donut chart empty state handling (Issue 15)
+            if (expensesOnly.length === 0) {
+                expenseChartInstance = new Chart(expenseCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['No expense data'],
+                        datasets: [{
+                            data: [1],
+                            backgroundColor: [isDark ? '#27272a' : '#f1f5f9'],
+                            borderWidth: 0
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        cutout: '75%',
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: { enabled: false }
+                        }
+                    },
+                    plugins: [{
+                        id: 'doughnutEmptyText',
+                        beforeDraw: function(chart) {
+                            const width = chart.width;
+                            const height = chart.height;
+                            const ctx = chart.ctx;
+                            ctx.restore();
+                            ctx.textBaseline = "middle";
+                            ctx.font = `600 0.85em var(--font-sans)`;
+                            ctx.fillStyle = labelColor;
+                            const txt = "No Expenses in Range";
+                            const txtX = Math.round((width - ctx.measureText(txt).width) / 2);
+                            ctx.fillText(txt, txtX, height / 2);
+                            ctx.save();
+                        }
+                    }]
+                });
+            } else {
+                expenseChartInstance = new Chart(expenseCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: categories,
+                        datasets: [{
+                            data: categoryValues,
+                            backgroundColor: [
+                                '#f97316',
+                                '#3b82f6',
+                                '#8b5cf6',
+                                '#ec4899',
+                                '#eab308',
+                                '#64748b'
+                            ],
+                            borderWidth: isDark ? 2 : 1,
+                            borderColor: isDark ? '#18181b' : '#ffffff',
+                            hoverOffset: 6
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        cutout: '75%',
+                        plugins: {
+                            legend: {
+                                position: 'bottom',
+                                labels: {
+                                    boxWidth: 8,
+                                    boxHeight: 8,
+                                    borderRadius: 4,
+                                    font: { family: 'Inter', size: 10 },
+                                    padding: 10
+                                }
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(ctx) {
+                                        return ` ${ctx.label}: ${formatCurrency(ctx.raw)}`;
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    plugins: [doughnutCenterTextPlugin]
+                });
+            }
+
+            // --- CHART 2: Comparison (Rounded Bar) ---
+            const totals = dashboardTxns.reduce((acc, curr) => {
+                acc[curr.type] += curr.amount;
+                return acc;
+            }, { income: 0, expense: 0 });
+
+            const incomeGrad = comparisonCtx.createLinearGradient(0, 0, 0, 200);
+            incomeGrad.addColorStop(0, '#10b981');
+            incomeGrad.addColorStop(1, 'rgba(16, 185, 129, 0.15)');
+
+            const expenseGrad = comparisonCtx.createLinearGradient(0, 0, 0, 200);
+            expenseGrad.addColorStop(0, '#ef4444');
+            expenseGrad.addColorStop(1, 'rgba(239, 68, 68, 0.15)');
+
+            comparisonChartInstance = new Chart(comparisonCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Income', 'Expenses'],
+                    datasets: [{
+                        data: [totals.income, totals.expense],
+                        backgroundColor: [incomeGrad, expenseGrad],
+                        borderColor: [
+                            'rgba(16, 185, 129, 0.8)',
+                            'rgba(239, 68, 68, 0.8)'
+                        ],
+                        borderWidth: 1.5,
+                        borderRadius: 6,
+                        borderSkipped: false,
+                        barThickness: 40
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            grid: {
+                                color: gridBorderColor,
+                                drawTicks: false
+                            },
+                            ticks: {
+                                callback: function(val) {
+                                    return '₹' + val.toLocaleString('en-IN');
+                                },
+                                font: { family: 'Inter', size: 9 }
+                            },
+                            border: {
+                                dash: [5, 5]
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                font: { family: 'Inter', size: 10, weight: '500' }
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: function(ctx) {
+                                    return ` Total: ${formatCurrency(ctx.raw)}`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            // --- CHART 3: Monthly/Yearly Trend (Line Chart) ---
+            let dates = dashboardTxns.map(t => new Date(t.date));
+            let minDate = dates.length > 0 ? new Date(Math.min(...dates)) : new Date();
+            let maxDate = dates.length > 0 ? new Date(Math.max(...dates)) : new Date();
+
+            if (dateFilterPreset.value === 'custom' && startDateInput.value && endDateInput.value) {
+                minDate = new Date(startDateInput.value);
+                maxDate = new Date(endDateInput.value);
+            }
+
+            const diffTime = Math.abs(maxDate - minDate);
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            const groupByDay = diffDays <= 31;
+
+            const intervals = [];
+            let current = new Date(minDate);
+            // Limit loop count to 366 iterations to prevent infinite loops (Issue 4 safety)
+            let loopSafety = 0;
+            while (current <= maxDate && loopSafety < 366) {
+                loopSafety++;
+                let key;
+                if (groupByDay) {
+                    key = current.toLocaleDateString('en-CA');
+                    current.setDate(current.getDate() + 1);
+                } else {
+                    key = current.toLocaleDateString('en-CA').substring(0, 7);
+                    current.setMonth(current.getMonth() + 1);
+                }
+                if (!intervals.includes(key)) {
+                    intervals.push(key);
+                }
+            }
+            intervals.sort();
+
+            const intervalIncome = {};
+            const intervalExpense = {};
+
+            dashboardTxns.forEach(t => {
+                const key = groupByDay ? t.date : t.date.substring(0, 7);
+                if (t.type === 'income') {
+                    intervalIncome[key] = (intervalIncome[key] || 0) + t.amount;
+                } else {
+                    intervalExpense[key] = (intervalExpense[key] || 0) + t.amount;
+                }
+            });
+
+            const incomeData = intervals.map(k => intervalIncome[k] || 0);
+            const expenseData = intervals.map(k => intervalExpense[k] || 0);
+
+            const trendLabels = intervals.map(k => {
+                try {
+                    if (groupByDay) {
+                        const d = new Date(k + 'T00:00:00');
+                        return d.toLocaleDateString('en-US', { day: 'numeric', month: 'short' });
+                    } else {
+                        const d = new Date(k + '-02T00:00:00');
+                        return d.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+                    }
+                } catch(e) {
+                    return k;
+                }
+            });
+
+            trendChartInstance = new Chart(trendCtx, {
+                type: 'line',
+                data: {
+                    labels: trendLabels,
+                    datasets: [
+                        {
+                            label: 'Income',
+                            data: incomeData,
+                            borderColor: '#10b981',
+                            backgroundColor: 'rgba(16, 185, 129, 0.05)',
+                            fill: true,
+                            tension: 0.3,
+                            borderWidth: 2,
+                            pointRadius: intervals.length > 15 ? 1 : 3,
+                            pointHoverRadius: 5
+                        },
+                        {
+                            label: 'Expenses',
+                            data: expenseData,
+                            borderColor: '#ef4444',
+                            backgroundColor: 'rgba(239, 68, 68, 0.05)',
+                            fill: true,
+                            tension: 0.3,
+                            borderWidth: 2,
+                            pointRadius: intervals.length > 15 ? 1 : 3,
+                            pointHoverRadius: 5
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: {
+                        mode: 'index',
+                        intersect: false
+                    },
+                    scales: {
+                        y: {
+                            grid: {
+                                color: gridBorderColor,
+                                drawTicks: false
+                            },
+                            ticks: {
+                                callback: function(val) {
+                                    return '₹' + val.toLocaleString('en-IN');
+                                },
+                                font: { family: 'Inter', size: 9 }
+                            },
+                            border: {
+                                dash: [5, 5]
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                font: { family: 'Inter', size: 9, weight: '500' }
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                boxWidth: 10,
+                                boxHeight: 3,
+                                font: { family: 'Inter', size: 10 }
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(ctx) {
+                                    return ` ${ctx.dataset.label}: ${formatCurrency(ctx.raw)}`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Initialize Application
+        initTheme();
+        initApp();
+
+        // Load browser testing suite dynamically if requested (Issue 28)
+        if (location.search.includes('runTests=true')) {
+            const script = document.createElement('script');
+            script.src = './test_suite.js';
+            document.body.appendChild(script);
+        }
+    </script>
+</body>
+</html>
