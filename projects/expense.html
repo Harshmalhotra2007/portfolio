@@ -3,13 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="AeroFinance Expense Tracker - A comprehensive personal finance management tool for tracking income, expenses, and budgeting with interactive charts and data visualization.">
     <title>AeroFinance - Expense Tracker</title>
     <!-- Chart.js for Visualizations -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js" integrity="sha384-JUh163oCRItcbPme8pYnROHQMC6fNKTBWtRG3I3I0erJkzNgL7uxKlNwcrcFKeqF" crossorigin="anonymous"></script>
     <!-- Lucide Icons for Modern UI -->
-    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/lucide@0.432.0" integrity="sha384-7Ue6gsoPxiIMspPN9GMOfVMdHjDOvSFo3GiBOquipnEJPCXJUlTvaQUaroTkSt+h" crossorigin="anonymous"></script>
     <!-- Custom Style Sheet -->
-    <link rel="stylesheet" href="expence.css">
+    <link rel="stylesheet" href="expense.css">
 </head>
 <body>
 
@@ -36,12 +37,12 @@
             </nav>
             
             <div class="sidebar-footer" id="sidebarFooter">
-                <button class="theme-btn" id="themeToggle" type="button">
+                <button class="theme-btn" id="themeToggle" type="button" aria-label="Toggle dark mode">
                     <i data-lucide="moon"></i>
                     <span>Dark Mode</span>
                 </button>
                 
-                <a href="../44010425029 personal porfolio/44010425029_WebPortfolio.html" class="portfolio-link" id="portfolioLink">
+                <a href="../index.html" class="portfolio-link" id="portfolioLink">
                     <i data-lucide="arrow-left"></i>
                     <span>Back to Portfolio</span>
                 </a>
@@ -81,15 +82,18 @@
             <header class="main-header">
                 <div class="header-title-section">
                     <h1 id="panelTitle">Dashboard</h1>
-                    <p id="panelSubtitle">Overview of your finances, tracking income and expenses.</p>
+                    <p id="panelSubtitle" style="font-size: 0.9rem; color: var(--muted-foreground); margin-top: 0.5rem;">Overview of your finances, tracking income and expenses.</p>
                 </div>
                 <div class="header-actions">
                     <!-- Date Picker Filter Dropdown -->
                     <div class="custom-range-inputs" id="customRangeInputs">
+                        <label for="startDate" class="sr-only">Start Date</label>
                         <input type="date" id="startDate" class="custom-date-field">
-                        <span>to</span>
+                        <span aria-hidden="true">to</span>
+                        <label for="endDate" class="sr-only">End Date</label>
                         <input type="date" id="endDate" class="custom-date-field">
                     </div>
+                    <label for="dateFilterPreset" class="sr-only">Date filter preset</label>
                     <select id="dateFilterPreset" class="date-picker-dropdown">
                         <option value="all">All Time</option>
                         <option value="week">This Week</option>
@@ -155,27 +159,29 @@
                     </div>
                 </div>
                 
-                <!-- Main Dashboard Grid Split -->
-                <div class="dashboard-content-split">
+                <!-- Charts Section -->
+                <section aria-labelledby="chartsSectionTitle">
+                    <h2 id="chartsSectionTitle" class="sr-only">Financial Charts</h2>
+                    <div class="dashboard-content-split">
                     <!-- Left Charts Column -->
                     <div class="dashboard-charts-column">
                         <div class="charts-grid" style="grid-template-columns: 1fr;">
                             <div class="card chart-card" style="height: 320px;">
-                                <h3>Income vs Expense</h3>
+                                <h2 role="heading" aria-level="3">Income vs Expense</h2>
                                 <div class="chart-canvas-container">
                                     <canvas id="comparisonChart"></canvas>
                                 </div>
                             </div>
                             
                             <div class="card chart-card" style="height: 320px;">
-                                <h3>Expense Breakdown</h3>
+                                <h2 role="heading" aria-level="3">Expense Breakdown</h2>
                                 <div class="chart-canvas-container">
                                     <canvas id="expenseChart"></canvas>
                                 </div>
                             </div>
 
                             <div class="card chart-card" style="height: 320px;">
-                                <h3>Monthly/Yearly Trend</h3>
+                                <h2 role="heading" aria-level="3">Monthly/Yearly Trend</h2>
                                 <div class="chart-canvas-container">
                                     <canvas id="trendChart"></canvas>
                                 </div>
@@ -188,7 +194,7 @@
                         <!-- Monthly Budgets Card -->
                         <div class="card budget-card">
                             <div class="budget-card-header">
-                                <h3>Monthly Budgets</h3>
+                                <h2 role="heading" aria-level="3">Monthly Budgets</h2>
                                 <button class="btn btn-secondary" id="openBudgetModalBtn" type="button" style="padding: 0.35rem 0.75rem; font-size: 0.75rem;">
                                     <i data-lucide="settings" style="width: 12px; height: 12px;"></i> Set Limits
                                 </button>
@@ -201,7 +207,7 @@
                         <!-- n8n Automation Webhook Card -->
                         <div class="card webhook-card">
                             <div class="webhook-card-header">
-                                <h3>n8n Webhook Console</h3>
+                                <h2 role="heading" aria-level="3">n8n Webhook Console</h2>
                                 <button class="btn btn-primary" id="simulateWebhookBtn" type="button" style="padding: 0.35rem 0.75rem; font-size: 0.75rem; background-color: #10b981; hover: opacity: 0.9;">
                                     <i data-lucide="play" style="width:12px; height:12px;"></i> Scan Receipt
                                 </button>
@@ -226,7 +232,7 @@
                     <!-- Table Search & Filter Toolbar -->
                     <div class="transactions-header" style="flex-direction: column; gap: 1rem; align-items: stretch;">
                         <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
-                            <h3 class="table-title" style="margin: 0;">Recent Transactions</h3>
+                            <h2 class="table-title" style="margin: 0;" role="heading" aria-level="3">Recent Transactions</h2>
                             <button class="btn btn-secondary btn-danger" id="bulkDeleteBtn" style="display: none; padding: 0.4rem 0.75rem; font-size: 0.75rem; align-items: center; gap: 0.35rem; border-radius: 6px;" type="button">
                                 <i data-lucide="trash-2" style="width: 13px; height: 13px;"></i>
                                 <span>Delete Selected (<span id="selectedCount">0</span>)</span>
@@ -235,7 +241,8 @@
                         
                         <div class="search-filter-controls" style="display: flex; flex-wrap: wrap; gap: 0.75rem; align-items: center; width: 100%;">
                             <div class="search-wrapper" style="flex: 1; min-width: 180px;">
-                                <i data-lucide="search"></i>
+                                <i data-lucide="search" aria-hidden="true"></i>
+                                <label for="searchInput" class="sr-only">Search transactions</label>
                                 <input type="text" id="searchInput" class="search-input" placeholder="Search description/details...">
                             </div>
 
@@ -247,9 +254,11 @@
                             </div>
 
                             <div style="display: flex; align-items: center; gap: 0.35rem;">
-                                <input type="date" id="tableStartDate" class="form-control" style="font-size: 0.75rem; padding: 0.3rem 0.5rem; height: 32px; border-radius: 6px; width: 120px;" title="Start Date">
-                                <span style="font-size: 0.75rem; color: var(--muted-foreground);">to</span>
-                                <input type="date" id="tableEndDate" class="form-control" style="font-size: 0.75rem; padding: 0.3rem 0.5rem; height: 32px; border-radius: 6px; width: 120px;" title="End Date">
+                                <label for="tableStartDate" class="sr-only">Start Date</label>
+                                <input type="date" id="tableStartDate" class="form-control" style="font-size: 0.75rem; padding: 0.3rem 0.5rem; height: 32px; border-radius: 6px; width: 120px;">
+                                <span style="font-size: 0.75rem; color: var(--muted-foreground);" aria-hidden="true">to</span>
+                                <label for="tableEndDate" class="sr-only">End Date</label>
+                                <input type="date" id="tableEndDate" class="form-control" style="font-size: 0.75rem; padding: 0.3rem 0.5rem; height: 32px; border-radius: 6px; width: 120px;">
                             </div>
                             
                             <div class="filter-btn-group" style="margin-left: auto;">
@@ -265,8 +274,8 @@
                         <table class="txn-table">
                             <thead>
                                 <tr>
-                                    <th style="width: 40px; text-align: center;"><input type="checkbox" id="selectAllTxns" style="cursor: pointer; width: 14px; height: 14px; vertical-align: middle;"></th>
-                                    <th class="sortable-header" data-sort="date" style="cursor: pointer; user-select: none;">Date <span class="sort-indicator" id="sort_date" style="margin-left: 0.2rem; font-size: 0.65rem; opacity: 0.8;">▼</span></th>
+                                    <th style="width: 40px; text-align: center;"><input type="checkbox" id="selectAllTxns" aria-label="Select all transactions" style="cursor: pointer; width: 14px; height: 14px; vertical-align: middle;"></th>
+                                    <th class="sortable-header" data-sort="date" style="cursor: pointer; user-select: none;">Date <span class="sort-indicator" id="sort_date" style="margin-left: 0.2rem; font-size: 0.65rem; opacity: 0.8;">▲</span>
                                     <th class="sortable-header" data-sort="category" style="cursor: pointer; user-select: none;">Category <span class="sort-indicator" id="sort_category" style="margin-left: 0.2rem; font-size: 0.65rem; opacity: 0.5;"></span></th>
                                     <th>Note / Details</th>
                                     <th>Type</th>
@@ -289,7 +298,7 @@
     <div class="modal-overlay" id="transactionModal">
         <div class="modal-container">
             <div class="modal-header">
-                <h3 id="formTitle">Add Transaction</h3>
+                <h2 id="formTitle">Add Transaction</h2>
                 <button class="modal-close" id="closeModalBtn" type="button">&times;</button>
             </div>
             <form id="transactionForm">
@@ -397,7 +406,7 @@
     <div class="modal-overlay" id="budgetModal">
         <div class="modal-container" style="max-width: 460px;">
             <div class="modal-header">
-                <h3>Monthly Budget Limits</h3>
+                <h2>Monthly Budget Limits</h2>
                 <button class="modal-close" id="closeBudgetModalBtn" type="button">&times;</button>
             </div>
             <form id="budgetForm">
@@ -1444,6 +1453,33 @@
             return list;
         }
 
+        // Sort transactions by the currently selected column (Issue 28)
+        function sortTransactions(list) {
+            const dir = currentSortDir === 'asc' ? 1 : -1;
+            return list.slice().sort((a, b) => {
+                let av, bv;
+                switch (currentSortCol) {
+                    case 'date':
+                        av = new Date(a.date + 'T00:00:00').getTime();
+                        bv = new Date(b.date + 'T00:00:00').getTime();
+                        break;
+                    case 'category':
+                        av = (a.category || '').toLowerCase();
+                        bv = (b.category || '').toLowerCase();
+                        break;
+                    case 'amount':
+                        av = Number(a.amount) || 0;
+                        bv = Number(b.amount) || 0;
+                        break;
+                    default:
+                        return 0;
+                }
+                if (av < bv) return -dir;
+                if (av > bv) return dir;
+                return 0;
+            });
+        }
+
         // --- n8n WEBHOOK INTEGRATION CHANNEL (Real request) ---
         function initWebhookConfig() {
             const savedUrl = localStorage.getItem('aerofinance_webhook_url');
@@ -2201,7 +2237,7 @@
                         <td colspan="7">
                             <div class="empty-state">
                                 <i data-lucide="folder-open"></i>
-                                <h4>No transaction records found</h4>
+                                <h3>No transaction records found</h3>
                                 <p>Try adjusting your date filters or search queries.</p>
                             </div>
                         </td>

@@ -4,13 +4,58 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Premium Weather Dashboard</title>
+  <meta name="description" content="A modern weather dashboard featuring real-time current conditions, air quality index, 48-hour forecast, and sunrise/sunset times. Search cities, toggle temperature units, and get comprehensive weather insights with an interactive interface.">
+  <style>
+    /* Focus-visible styles for accessibility */
+    :focus-visible {
+      outline: 2px solid #00f0ff;
+      outline-offset: 2px;
+    }
+    button:focus-visible, input:focus-visible {
+      outline: 2px solid #00f0ff;
+      outline-offset: 2px;
+    }
+    /* Touch target size minimum 24x24px for accessibility (WCAG 2.5.5) */
+    .btn-share, .btn-primary, .btn-secondary, .close-error-btn, .close-alert-btn, .modal-close-btn {
+      min-width: 24px;
+      min-height: 24px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .btn-share {
+      padding: 0.5rem;
+    }
+    .btn-primary, .btn-secondary {
+      padding: 0.5rem 1rem;
+      min-height: 40px;
+    }
+    .switch input[type="checkbox"] {
+      position: absolute;
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    .switch .slider {
+      position: relative;
+      display: inline-block;
+      width: 44px;
+      height: 24px;
+      border-radius: 24px;
+      cursor: pointer;
+    }
+    .switch .slider:focus-visible {
+      outline: 2px solid #00f0ff;
+      outline-offset: 2px;
+    }
+  </style>
   <!-- Google Fonts Outfit -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <!-- Lucide Icons -->
-  <script src="https://unpkg.com/lucide@latest" loading="lazy"></script>
-  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.432.0" integrity="sha384-7Ue6gsoPxiIMspPN9GMOfVMdHjDOvSFo3GiBOquipnEJPCXJUlTvaQUaroTkSt+h" crossorigin="anonymous" loading="lazy"></script>
+  
 </head>
 <body class="theme-clear-day">
   <!-- Live Weather Animation Overlays -->
@@ -25,12 +70,12 @@
         <i data-lucide="alert-triangle" class="alert-icon-main animate-pulse"></i>
         <span id="alert-text">Severe Weather Advisory! Extreme wind speed detected.</span>
       </div>
-      <button id="close-alert-btn" class="close-alert-btn">&times;</button>
+      <button id="close-alert-btn" class="close-alert-btn" aria-label="Close alert">&times;</button>
     </div>
 
     <header class="app-header">
       <div class="logo-area" style="display: flex; align-items: center; gap: 15px;">
-        <a href="../44010425029 personal porfolio/44010425029_WebPortfolio.html" class="back-link" style="text-decoration: none; color: inherit; display: inline-flex; align-items: center; font-weight: 500; font-size: 0.9rem; opacity: 0.8; transition: opacity 0.2s; margin-right: 10px;"><i data-lucide="arrow-left" style="margin-right: 5px; width: 16px; height: 16px;"></i> Portfolio</a>
+        <a href="../index.html" class="back-link" style="text-decoration: none; color: inherit; display: inline-flex; align-items: center; font-weight: 500; font-size: 0.9rem; opacity: 0.8; transition: opacity 0.2s; margin-right: 10px;"><i data-lucide="arrow-left" style="margin-right: 5px; width: 16px; height: 16px;"></i> Portfolio</a>
         <i data-lucide="cloud-sun" class="logo-icon"></i>
         <h1>AetherWeather</h1>
       </div>
@@ -39,21 +84,22 @@
         <div class="dark-mode-toggle-container">
           <i data-lucide="sun" class="toggle-icon-sun"></i>
           <label class="switch">
-            <input type="checkbox" id="theme-toggle">
+            <input type="checkbox" id="theme-toggle" aria-label="Toggle dark mode">
             <span class="slider round"></span>
           </label>
           <i data-lucide="moon" class="toggle-icon-moon"></i>
         </div>
         <div class="unit-toggle-container">
+          <label for="unit-toggle" class="sr-only">Toggle temperature unit</label>
           <span class="unit-label">°C</span>
           <label class="switch">
-            <input type="checkbox" id="unit-toggle">
+            <input type="checkbox" id="unit-toggle" aria-label="Toggle between Celsius and Fahrenheit">
             <span class="slider round"></span>
           </label>
           <span class="unit-label">°F</span>
         </div>
-        <button id="share-btn" class="btn-share" title="Share current weather URL">
-          <i data-lucide="share-2"></i>
+        <button id="share-btn" class="btn-share" title="Share current weather URL" aria-label="Share current weather URL">
+          <i data-lucide="share-2" aria-hidden="true"></i>
         </button>
       </div>
     </header>
@@ -64,34 +110,35 @@
       <section class="search-panel">
         <div class="search-bar-container">
           <div class="input-wrapper">
-            <i data-lucide="search" class="search-icon"></i>
+            <i data-lucide="search" class="search-icon" aria-hidden="true"></i>
+            <label for="city-input" class="sr-only">Search for a city</label>
             <input type="text" id="city-input" placeholder="Search for a city..." autocomplete="off">
             <!-- Autocomplete suggestions dropdown -->
             <div id="suggestions-dropdown" class="suggestions-dropdown hidden"></div>
           </div>
-          <button id="search-btn" class="btn-primary">Search</button>
-          <button id="location-btn" class="btn-secondary" title="Use current location">
-            <i data-lucide="map-pin" class="btn-icon"></i>
+          <button id="search-btn" class="btn-primary" aria-label="Search for city">Search</button>
+          <button id="location-btn" class="btn-secondary" title="Use current location" aria-label="Use current location">
+            <i data-lucide="map-pin" class="btn-icon" aria-hidden="true"></i>
           </button>
         </div>
 
         <!-- Search History Tags -->
         <div class="history-tags-wrapper">
           <div id="history-tags" class="history-tags"></div>
-          <button id="clear-history-btn" class="clear-history-btn hidden" title="Clear history">
-            <i data-lucide="trash-2"></i>
+          <button id="clear-history-btn" class="clear-history-btn hidden" title="Clear history" aria-label="Clear search history">
+            <i data-lucide="trash-2" aria-hidden="true"></i>
           </button>
         </div>
       </section>
 
       <!-- Inline Error message area -->
-      <div id="error-message" class="error-message-card hidden">
-        <i data-lucide="alert-circle" class="error-icon"></i>
+      <div id="error-message" class="error-message-card hidden" role="alert" aria-live="polite">
+        <i data-lucide="alert-circle" class="error-icon" aria-hidden="true"></i>
         <div class="error-details">
-          <h3>Location not found</h3>
+          <h2>Location not found</h2>
           <p>Please check the spelling and try again.</p>
         </div>
-        <button id="close-error-btn" class="close-error-btn">&times;</button>
+        <button id="close-error-btn" class="close-error-btn" aria-label="Close error message">&times;</button>
       </div>
 
       <!-- Two-Column Layout Container -->
@@ -166,7 +213,7 @@
                   <div class="metric-header">
                     <i data-lucide="droplets" class="metric-icon color-humidity"></i>
                     <span class="metric-title">Humidity</span>
-                    <i data-lucide="maximize-2" class="expand-icon"></i>
+                    <i data-lucide="maximize-2" class="expand-icon" aria-label="Expand details" role="button" tabindex="0"></i>
                   </div>
                   <span id="humidity" class="metric-value">75%</span>
                 </div>
@@ -178,7 +225,7 @@
                   <div class="metric-header">
                     <i data-lucide="wind" class="metric-icon color-wind"></i>
                     <span class="metric-title">Wind Speed</span>
-                    <i data-lucide="maximize-2" class="expand-icon"></i>
+                    <i data-lucide="maximize-2" class="expand-icon" aria-label="Expand details" role="button" tabindex="0"></i>
                   </div>
                   <span id="wind-speed" class="metric-value">12 km/h</span>
                 </div>
@@ -190,7 +237,7 @@
                   <div class="metric-header">
                     <i data-lucide="gauge" class="metric-icon color-pressure"></i>
                     <span class="metric-title">Pressure</span>
-                    <i data-lucide="maximize-2" class="expand-icon"></i>
+                    <i data-lucide="maximize-2" class="expand-icon" aria-label="Expand details" role="button" tabindex="0"></i>
                   </div>
                   <span id="pressure" class="metric-value">1008 hPa</span>
                 </div>
@@ -220,7 +267,7 @@
                   <div class="title-wrapper">
                     <i data-lucide="activity" class="card-header-icon color-aqi"></i>
                     <h2>Air Quality Index</h2>
-                    <i data-lucide="maximize-2" class="expand-icon"></i>
+                    <i data-lucide="maximize-2" class="expand-icon" aria-label="Expand details" role="button" tabindex="0"></i>
                   </div>
                   <div class="aqi-badge-container">
                     <span id="aqi-badge" class="aqi-badge level-1">Good</span>
@@ -387,6 +434,8 @@
     </div>
   </div>
 
-  <script src="script.js"></script>
+  
 </body>
 </html>
+
+

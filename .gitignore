@@ -1,10 +1,41 @@
-# Claude Code / agent tooling — not part of the portfolio
-.agents/
-.claude/
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
 
-# Local preview artifacts
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+*.map
+
+# Environment variables
+.env
+.env.local
+.env.development.local
+.env.production.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+*.backup
 backups/
 
-# OS / editor noise
-.DS_Store
-*.swp
+# Lighthouse reports
+lighthouse-report.json
+lighthouse-*.json

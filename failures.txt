@@ -1,0 +1,545 @@
+﻿========== index.html ==========
+--- errors-in-console (score: 0) ---
+  Title: Browser errors were logged to the console
+  Desc:  Errors logged to the console indicate unresolved problems. They can come from network request failures and other browser concerns. [Learn more about this errors in console diagnostic audit](https://developer.chrome.com/docs/lighthouse/best-practices/errors-in-console/)
+  Items (2):
+    
+    
+
+--- color-contrast (score: 0) ---
+  Title: Background and foreground colors do not have a sufficient contrast ratio.
+  Desc:  Low-contrast text is difficult or impossible for many users to read. [Learn how to provide sufficient color contrast](https://dequeuniversity.com/rules/axe/4.14/color-contrast).
+  Items (2):
+    SEL: body > footer > div.container > p | LABEL: Â© 2026 HARSH MALHOTRA. DESIGNED IN THE VOID. ALL SYSTEM RIGHTS RESERVED. | EXPL: Fix any of the following:
+  Element has insufficient color contrast of 2.81 (foreground color: #555555, background color: #000000, font size: 9.6pt (12.8px), font weight: normal). Expected contrast ratio of 4.5:1
+    SEL: footer > div.container > p > span#currentYear | LABEL: 2026 | EXPL: Fix any of the following:
+  Element has insufficient color contrast of 2.81 (foreground color: #555555, background color: #000000, font size: 9.6pt (12.8px), font weight: normal). Expected contrast ratio of 4.5:1
+
+--- heading-order (score: 0) ---
+  Title: Heading elements are not in a sequentially-descending order
+  Desc:  Properly ordered headings that do not skip levels convey the semantic structure of the page, making it easier to navigate and understand when using assistive technologies. [Learn more about heading order](https://dequeuniversity.com/rules/axe/4.14/heading-order).
+  Items (1):
+    SEL: div.contact-card > div.contact-detail > div.contact-detail-text > h5 | LABEL: [ DIRECT_MAIL ] | EXPL: Fix any of the following:
+  Heading order invalid
+
+--- select-name (score: ) ---
+  Title: Select elements have associated label elements.
+  Desc:  Form elements without effective labels can create frustrating experiences for screen reader users. [Learn more about the `select` element](https://dequeuniversity.com/rules/axe/4.14/select-name).
+
+--- robots-txt (score: 0) ---
+  Title: robots.txt is not valid
+  Desc:  If your robots.txt file is malformed, crawlers may not be able to understand how you want your website to be crawled or indexed. [Learn more about robots.txt](https://developer.chrome.com/docs/lighthouse/seo/invalid-robots-txt/).
+  Items (495):
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    ... (465 more)
+
+--- llms-txt (score: 0) ---
+  Title: llms.txt does not follow recommendations
+  Desc:  If your llms.txt file does not follow recommendations, large language models may not be able to understand how you want your website to be crawled or used for training. The [llms.txt](https://llmstxt.org/) file should be a Markdown file containing at least one H1 header. [Learn more about the llms.txt audit](https://developer.chrome.com/docs/lighthouse/agentic-browsing/llms-txt).
+  Items (2):
+    
+    
+
+--- ard-schema (score: 0) ---
+  Title: ARD manifest is invalid
+  Desc:  A valid Agentic Resource Discovery (ARD) manifest, served at `/.well-known/ard.json` or linked with `rel="ard"`, lets AI agents and registries discover and verify your resources. [Learn more about the ARD specification](https://agenticresourcediscovery.org/spec/).
+  Items (1):
+    element=Root
+
+--- font-display-insight (score: 0) ---
+  Title: Font display
+  Desc:  Consider setting [font-display](https://developer.chrome.com/docs/performance/insights/font-display) to swap or optional to ensure text is consistently visible. swap can be further optimized to mitigate layout shifts with [font metric overrides](https://developer.chrome.com/blog/font-fallbacks).
+  Items (2):
+    
+    
+
+--- forced-reflow-insight (score: 0) ---
+  Title: Forced reflow
+  Desc:  A forced reflow occurs when JavaScript queries geometric properties (such as offsetWidth) after styles have been invalidated by a change to the DOM state. This can result in poor performance. Learn more about [forced reflows](https://developer.chrome.com/docs/performance/insights/forced-reflow) and possible mitigations.
+  Items (1):
+    
+
+--- network-dependency-tree-insight (score: 0) ---
+  Title: Network dependency tree
+  Desc:  [Avoid chaining critical requests](https://developer.chrome.com/docs/performance/insights/network-dependency-tree) by reducing the length of chains, reducing the download size of resources, or deferring the download of unnecessary resources to improve page load
+  Items (3):
+    value=@{type=network-tree; chains=; longestChain=}
+    value=@{type=table; headings=System.Object[]; items=System.Object[]}
+    value=@{type=text; value=No additional origins are good candidates for preconnecting}
+
+--- render-blocking-insight (score: 0) ---
+  Title: Render-blocking requests
+  Desc:  Requests are blocking the pageâ€™s initial render, which may delay LCP. [Deferring or inlining](https://developer.chrome.com/docs/performance/insights/render-blocking) can move these network requests out of the critical path.
+  Items (3):
+    
+    
+    
+
+========== projects/expense.html ==========
+--- errors-in-console (score: 0) ---
+  Title: Browser errors were logged to the console
+  Desc:  Errors logged to the console indicate unresolved problems. They can come from network request failures and other browser concerns. [Learn more about this errors in console diagnostic audit](https://developer.chrome.com/docs/lighthouse/best-practices/errors-in-console/)
+  Items (3):
+    
+    
+    
+
+--- color-contrast (score: 0) ---
+  Title: Background and foreground colors do not have a sufficient contrast ratio.
+  Desc:  Low-contrast text is difficult or impossible for many users to read. [Learn how to provide sufficient color contrast](https://dequeuniversity.com/rules/axe/4.14/color-contrast).
+  Items (2):
+    SEL: div.transactions-header > div.search-filter-controls > div.filter-btn-group > button.filter-btn | LABEL: Incomes | EXPL: Fix any of the following:
+  Element has insufficient color contrast of 1.04 (foreground color: #000000, background color: #080808, font size: 9.6pt (12.8px), font weight: normal). Expected contrast ratio of 4.5:1
+    SEL: div.transactions-header > div.search-filter-controls > div.filter-btn-group > button.filter-btn | LABEL: Expenses | EXPL: Fix any of the following:
+  Element has insufficient color contrast of 1.04 (foreground color: #000000, background color: #080808, font size: 9.6pt (12.8px), font weight: normal). Expected contrast ratio of 4.5:1
+
+--- heading-order (score: 0) ---
+  Title: Heading elements are not in a sequentially-descending order
+  Desc:  Properly ordered headings that do not skip levels convey the semantic structure of the page, making it easier to navigate and understand when using assistive technologies. [Learn more about heading order](https://dequeuniversity.com/rules/axe/4.14/heading-order).
+  Items (1):
+    SEL: div.dashboard-charts-column > div.charts-grid > div.card > h3 | LABEL: Income vs Expense | EXPL: Fix any of the following:
+  Heading order invalid
+
+--- label (score: 0) ---
+  Title: Form elements do not have associated labels
+  Desc:  Labels ensure that form controls are announced properly by assistive technologies, like screen readers. [Learn more about form element labels](https://dequeuniversity.com/rules/axe/4.14/label).
+  Items (3):
+    SEL: header.main-header > div.header-actions > div#customRangeInputs > input#startDate | LABEL: header.main-header > div.header-actions > div#customRangeInputs > input#startDate | EXPL: Fix any of the following:
+  Element does not have an implicit (wrapped) <label>
+  Element does not have an explicit <label>
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element has no placeholder attribute
+  Element's default semantics were not overridden with role="none" or role="presentation"
+    SEL: header.main-header > div.header-actions > div#customRangeInputs > input#endDate | LABEL: header.main-header > div.header-actions > div#customRangeInputs > input#endDate | EXPL: Fix any of the following:
+  Element does not have an implicit (wrapped) <label>
+  Element does not have an explicit <label>
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element has no placeholder attribute
+  Element's default semantics were not overridden with role="none" or role="presentation"
+    SEL: thead > tr > th > input#selectAllTxns | LABEL: thead > tr > th > input#selectAllTxns | EXPL: Fix any of the following:
+  Element does not have an implicit (wrapped) <label>
+  Element does not have an explicit <label>
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element has no placeholder attribute
+  Element's default semantics were not overridden with role="none" or role="presentation"
+
+--- select-name (score: 0) ---
+  Title: Select elements do not have associated label elements.
+  Desc:  Form elements without effective labels can create frustrating experiences for screen reader users. [Learn more about the `select` element](https://dequeuniversity.com/rules/axe/4.14/select-name).
+  Items (1):
+    SEL: main.main-panel > header.main-header > div.header-actions > select#dateFilterPreset | LABEL: All Time
+This Week
+This Month
+Last 30 Days
+Custom Range | EXPL: Fix any of the following:
+  Element does not have an implicit (wrapped) <label>
+  Element does not have an explicit <label>
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element's default semantics were not overridden with role="none" or role="presentation"
+
+--- meta-description (score: 0) ---
+  Title: Document does not have a meta description
+  Desc:  Meta descriptions may be included in search results to concisely summarize page content. [Learn more about the meta description](https://developer.chrome.com/docs/lighthouse/seo/meta-description/).
+
+--- robots-txt (score: 0) ---
+  Title: robots.txt is not valid
+  Desc:  If your robots.txt file is malformed, crawlers may not be able to understand how you want your website to be crawled or indexed. [Learn more about robots.txt](https://developer.chrome.com/docs/lighthouse/seo/invalid-robots-txt/).
+  Items (495):
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    ... (465 more)
+
+--- llms-txt (score: 0) ---
+  Title: llms.txt does not follow recommendations
+  Desc:  If your llms.txt file does not follow recommendations, large language models may not be able to understand how you want your website to be crawled or used for training. The [llms.txt](https://llmstxt.org/) file should be a Markdown file containing at least one H1 header. [Learn more about the llms.txt audit](https://developer.chrome.com/docs/lighthouse/agentic-browsing/llms-txt).
+  Items (2):
+    
+    
+
+--- ard-schema (score: 0) ---
+  Title: ARD manifest is invalid
+  Desc:  A valid Agentic Resource Discovery (ARD) manifest, served at `/.well-known/ard.json` or linked with `rel="ard"`, lets AI agents and registries discover and verify your resources. [Learn more about the ARD specification](https://agenticresourcediscovery.org/spec/).
+  Items (1):
+    element=Root
+
+--- agent-accessibility-tree (score: 0) ---
+  Title: Accessibility tree is not well-formed
+  Desc:  A well-formed [accessibility tree](https://developer.chrome.com/docs/lighthouse/agentic-browsing/accessibility-for-agents) helps AI agents to navigate and interact with the page.
+  Items (1):
+    value=@{type=table; headings=System.Object[]; items=System.Object[]}
+
+--- unsized-images (score: 0.5) ---
+  Title: Image elements do not have explicit `width` and `height`
+  Desc:  Set an explicit width and height on image elements to reduce layout shifts and improve CLS. [Learn how to set image dimensions](https://web.dev/articles/optimize-cls#images_without_dimensions)
+  Items (1):
+    SEL: body > div#lightboxOverlay > div.lightbox-container > img#lightboxImage | LABEL: Receipt
+
+--- unused-javascript (score: 0) ---
+  Title: Reduce unused JavaScript
+  Desc:  Reduce unused JavaScript and defer loading scripts until they are required to decrease bytes consumed by network activity. [Learn how to reduce unused JavaScript](https://developer.chrome.com/docs/lighthouse/performance/unused-javascript/).
+  Items (1):
+    
+
+--- unminified-javascript (score: 0.5) ---
+  Title: Minify JavaScript
+  Desc:  Minifying JavaScript files can reduce payload sizes and script parse time. [Learn how to minify JavaScript](https://developer.chrome.com/docs/lighthouse/performance/unminified-javascript/).
+  Items (1):
+    
+
+--- mainthread-work-breakdown (score: 0.5) ---
+  Title: Minimize main-thread work
+  Desc:  Consider reducing the time spent parsing, compiling and executing JS. You may find delivering smaller JS payloads helps with this. [Learn how to minimize main-thread work](https://developer.chrome.com/docs/lighthouse/performance/mainthread-work-breakdown/)
+  Items (6):
+    
+    
+    
+    
+    
+    
+
+--- forced-reflow-insight (score: 0) ---
+  Title: Forced reflow
+  Desc:  A forced reflow occurs when JavaScript queries geometric properties (such as offsetWidth) after styles have been invalidated by a change to the DOM state. This can result in poor performance. Learn more about [forced reflows](https://developer.chrome.com/docs/performance/insights/forced-reflow) and possible mitigations.
+  Items (1):
+    
+
+--- network-dependency-tree-insight (score: 0) ---
+  Title: Network dependency tree
+  Desc:  [Avoid chaining critical requests](https://developer.chrome.com/docs/performance/insights/network-dependency-tree) by reducing the length of chains, reducing the download size of resources, or deferring the download of unnecessary resources to improve page load
+  Items (3):
+    value=@{type=network-tree; chains=; longestChain=}
+    value=@{type=text; value=No origins were preconnected}
+    value=@{type=text; value=No additional origins are good candidates for preconnecting}
+
+--- render-blocking-insight (score: 0) ---
+  Title: Render-blocking requests
+  Desc:  Requests are blocking the pageâ€™s initial render, which may delay LCP. [Deferring or inlining](https://developer.chrome.com/docs/performance/insights/render-blocking) can move these network requests out of the critical path.
+  Items (3):
+    
+    
+    
+
+--- first-contentful-paint (score: 0.63) ---
+  Title: First Contentful Paint
+  Desc:  First Contentful Paint marks the time at which the first text or image is painted. [Learn more about the First Contentful Paint metric](https://developer.chrome.com/docs/lighthouse/performance/first-contentful-paint/).
+
+--- largest-contentful-paint (score: 0.87) ---
+  Title: Largest Contentful Paint
+  Desc:  Largest Contentful Paint marks the time at which the largest text or image is painted. [Learn more about the Largest Contentful Paint metric](https://developer.chrome.com/docs/lighthouse/performance/lighthouse-largest-contentful-paint/)
+
+========== projects/weather.html ==========
+--- errors-in-console (score: 0) ---
+  Title: Browser errors were logged to the console
+  Desc:  Errors logged to the console indicate unresolved problems. They can come from network request failures and other browser concerns. [Learn more about this errors in console diagnostic audit](https://developer.chrome.com/docs/lighthouse/best-practices/errors-in-console/)
+  Items (2):
+    
+    
+
+--- heading-order (score: 0) ---
+  Title: Heading elements are not in a sequentially-descending order
+  Desc:  Properly ordered headings that do not skip levels convey the semantic structure of the page, making it easier to navigate and understand when using assistive technologies. [Learn more about heading order](https://dequeuniversity.com/rules/axe/4.14/heading-order).
+  Items (1):
+    SEL: main.main-content > div#error-message > div.error-details > h3 | LABEL: Location not found | EXPL: Fix any of the following:
+  Heading order invalid
+
+--- label (score: 0) ---
+  Title: Form elements do not have associated labels
+  Desc:  Labels ensure that form controls are announced properly by assistive technologies, like screen readers. [Learn more about form element labels](https://dequeuniversity.com/rules/axe/4.14/label).
+  Items (2):
+    SEL: div.header-controls > div.dark-mode-toggle-container > label.switch > input#theme-toggle | LABEL: div.header-controls > div.dark-mode-toggle-container > label.switch > input#theme-toggle | EXPL: Fix any of the following:
+  Element does not have an implicit (wrapped) <label>
+  Element does not have an explicit <label>
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element has no placeholder attribute
+  Element's default semantics were not overridden with role="none" or role="presentation"
+    SEL: div.header-controls > div.unit-toggle-container > label.switch > input#unit-toggle | LABEL: div.header-controls > div.unit-toggle-container > label.switch > input#unit-toggle | EXPL: Fix any of the following:
+  Element does not have an implicit (wrapped) <label>
+  Element does not have an explicit <label>
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+  Element has no placeholder attribute
+  Element's default semantics were not overridden with role="none" or role="presentation"
+
+--- select-name (score: ) ---
+  Title: Select elements have associated label elements.
+  Desc:  Form elements without effective labels can create frustrating experiences for screen reader users. [Learn more about the `select` element](https://dequeuniversity.com/rules/axe/4.14/select-name).
+
+--- meta-description (score: 0) ---
+  Title: Document does not have a meta description
+  Desc:  Meta descriptions may be included in search results to concisely summarize page content. [Learn more about the meta description](https://developer.chrome.com/docs/lighthouse/seo/meta-description/).
+
+--- robots-txt (score: 0) ---
+  Title: robots.txt is not valid
+  Desc:  If your robots.txt file is malformed, crawlers may not be able to understand how you want your website to be crawled or indexed. [Learn more about robots.txt](https://developer.chrome.com/docs/lighthouse/seo/invalid-robots-txt/).
+  Items (495):
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    ... (465 more)
+
+--- llms-txt (score: 0) ---
+  Title: llms.txt does not follow recommendations
+  Desc:  If your llms.txt file does not follow recommendations, large language models may not be able to understand how you want your website to be crawled or used for training. The [llms.txt](https://llmstxt.org/) file should be a Markdown file containing at least one H1 header. [Learn more about the llms.txt audit](https://developer.chrome.com/docs/lighthouse/agentic-browsing/llms-txt).
+  Items (2):
+    
+    
+
+--- ard-schema (score: 0) ---
+  Title: ARD manifest is invalid
+  Desc:  A valid Agentic Resource Discovery (ARD) manifest, served at `/.well-known/ard.json` or linked with `rel="ard"`, lets AI agents and registries discover and verify your resources. [Learn more about the ARD specification](https://agenticresourcediscovery.org/spec/).
+  Items (1):
+    element=Root
+
+--- agent-accessibility-tree (score: 0) ---
+  Title: Accessibility tree is not well-formed
+  Desc:  A well-formed [accessibility tree](https://developer.chrome.com/docs/lighthouse/agentic-browsing/accessibility-for-agents) helps AI agents to navigate and interact with the page.
+  Items (1):
+    value=@{type=table; headings=System.Object[]; items=System.Object[]}
+
+--- target-size (score: 0) ---
+  Title: Touch targets do not have sufficient size or spacing.
+  Desc:  Touch targets with sufficient size and spacing help users who may have difficulty targeting small controls to activate the targets. [Learn more about touch targets](https://dequeuniversity.com/rules/axe/4.14/target-size).
+  Items (2):
+    SEL: div.dashboard-wrapper > header.app-header > div.header-controls > button#share-btn | LABEL: div.dashboard-wrapper > header.app-header > div.header-controls > button#share-btn | EXPL: Fix any of the following:
+  Target has insufficient size (16px by 6px, should be at least 24px by 24px)
+  Target has insufficient space to its closest neighbors. Safe clickable space has a diameter of 8px instead of at least 24px.
+    SEL: main.main-content > section.search-panel > div.search-bar-container > button#search-btn | LABEL: Search | EXPL: Fix any of the following:
+  Target has insufficient size (58.3px by 21px, should be at least 24px by 24px)
+  Target has insufficient space to its closest neighbors. Safe clickable space has a diameter of 21px instead of at least 24px.
+
+--- network-dependency-tree-insight (score: 0) ---
+  Title: Network dependency tree
+  Desc:  [Avoid chaining critical requests](https://developer.chrome.com/docs/performance/insights/network-dependency-tree) by reducing the length of chains, reducing the download size of resources, or deferring the download of unnecessary resources to improve page load
+  Items (3):
+    value=@{type=network-tree; chains=; longestChain=}
+    value=@{type=table; headings=System.Object[]; items=System.Object[]}
+    value=@{type=text; value=No additional origins are good candidates for preconnecting}
+
+--- render-blocking-insight (score: 0) ---
+  Title: Render-blocking requests
+  Desc:  Requests are blocking the pageâ€™s initial render, which may delay LCP. [Deferring or inlining](https://developer.chrome.com/docs/performance/insights/render-blocking) can move these network requests out of the critical path.
+  Items (2):
+    
+    
+
+--- first-contentful-paint (score: 0.89) ---
+  Title: First Contentful Paint
+  Desc:  First Contentful Paint marks the time at which the first text or image is painted. [Learn more about the First Contentful Paint metric](https://developer.chrome.com/docs/lighthouse/performance/first-contentful-paint/).
+
+========== projects/wild.html ==========
+--- errors-in-console (score: 0) ---
+  Title: Browser errors were logged to the console
+  Desc:  Errors logged to the console indicate unresolved problems. They can come from network request failures and other browser concerns. [Learn more about this errors in console diagnostic audit](https://developer.chrome.com/docs/lighthouse/best-practices/errors-in-console/)
+  Items (1):
+    
+
+--- label (score: ) ---
+  Title: Form elements have associated labels
+  Desc:  Labels ensure that form controls are announced properly by assistive technologies, like screen readers. [Learn more about form element labels](https://dequeuniversity.com/rules/axe/4.14/label).
+
+--- select-name (score: ) ---
+  Title: Select elements have associated label elements.
+  Desc:  Form elements without effective labels can create frustrating experiences for screen reader users. [Learn more about the `select` element](https://dequeuniversity.com/rules/axe/4.14/select-name).
+
+--- robots-txt (score: 0) ---
+  Title: robots.txt is not valid
+  Desc:  If your robots.txt file is malformed, crawlers may not be able to understand how you want your website to be crawled or indexed. [Learn more about robots.txt](https://developer.chrome.com/docs/lighthouse/seo/invalid-robots-txt/).
+  Items (495):
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    ... (465 more)
+
+--- llms-txt (score: 0) ---
+  Title: llms.txt does not follow recommendations
+  Desc:  If your llms.txt file does not follow recommendations, large language models may not be able to understand how you want your website to be crawled or used for training. The [llms.txt](https://llmstxt.org/) file should be a Markdown file containing at least one H1 header. [Learn more about the llms.txt audit](https://developer.chrome.com/docs/lighthouse/agentic-browsing/llms-txt).
+  Items (2):
+    
+    
+
+--- ard-schema (score: 0) ---
+  Title: ARD manifest is invalid
+  Desc:  A valid Agentic Resource Discovery (ARD) manifest, served at `/.well-known/ard.json` or linked with `rel="ard"`, lets AI agents and registries discover and verify your resources. [Learn more about the ARD specification](https://agenticresourcediscovery.org/spec/).
+  Items (1):
+    element=Root
+
+--- landmark-one-main (score: 0) ---
+  Title: Document does not have a main landmark.
+  Desc:  One main landmark helps screen reader users navigate a web page. [Learn more about landmarks](https://dequeuniversity.com/rules/axe/4.14/landmark-one-main).
+  Items (1):
+    SEL: html | LABEL: html | EXPL: Fix all of the following:
+  Document does not have a main landmark
+
+--- unused-javascript (score: 0) ---
+  Title: Reduce unused JavaScript
+  Desc:  Reduce unused JavaScript and defer loading scripts until they are required to decrease bytes consumed by network activity. [Learn how to reduce unused JavaScript](https://developer.chrome.com/docs/lighthouse/performance/unused-javascript/).
+  Items (1):
+    
+
+--- image-delivery-insight (score: 0.5) ---
+  Title: Improve image delivery
+  Desc:  Reducing the download time of images can improve the perceived load time of the page and LCP. [Learn more about optimizing image size](https://developer.chrome.com/docs/performance/insights/image-delivery).
+  Items (1):
+    SEL: body > section#hero | LABEL: Discover Wild India
+
+Explore the majestic forests, diverse wildlife, and breathâ€¦
+
+--- forced-reflow-insight (score: 0) ---
+  Title: Forced reflow
+  Desc:  A forced reflow occurs when JavaScript queries geometric properties (such as offsetWidth) after styles have been invalidated by a change to the DOM state. This can result in poor performance. Learn more about [forced reflows](https://developer.chrome.com/docs/performance/insights/forced-reflow) and possible mitigations.
+  Items (1):
+    
+
+--- network-dependency-tree-insight (score: 0) ---
+  Title: Network dependency tree
+  Desc:  [Avoid chaining critical requests](https://developer.chrome.com/docs/performance/insights/network-dependency-tree) by reducing the length of chains, reducing the download size of resources, or deferring the download of unnecessary resources to improve page load
+  Items (3):
+    value=@{type=network-tree; chains=; longestChain=}
+    value=@{type=table; headings=System.Object[]; items=System.Object[]}
+    value=@{type=text; value=No additional origins are good candidates for preconnecting}
+
+--- render-blocking-insight (score: 0) ---
+  Title: Render-blocking requests
+  Desc:  Requests are blocking the pageâ€™s initial render, which may delay LCP. [Deferring or inlining](https://developer.chrome.com/docs/performance/insights/render-blocking) can move these network requests out of the critical path.
+  Items (5):
+    
+    
+    
+    
+    
+
+--- first-contentful-paint (score: 0.82) ---
+  Title: First Contentful Paint
+  Desc:  First Contentful Paint marks the time at which the first text or image is painted. [Learn more about the First Contentful Paint metric](https://developer.chrome.com/docs/lighthouse/performance/first-contentful-paint/).
+
+--- largest-contentful-paint (score: 0.87) ---
+  Title: Largest Contentful Paint
+  Desc:  Largest Contentful Paint marks the time at which the largest text or image is painted. [Learn more about the Largest Contentful Paint metric](https://developer.chrome.com/docs/lighthouse/performance/lighthouse-largest-contentful-paint/)
+
+--- max-potential-fid (score: 0.81) ---
+  Title: Max Potential First Input Delay
+  Desc:  The maximum potential First Input Delay that your users could experience is the duration of the longest task. [Learn more about the Maximum Potential First Input Delay metric](https://developer.chrome.com/docs/lighthouse/performance/lighthouse-max-potential-fid/).
+
+

@@ -1,0 +1,43 @@
+{
+  "name": "personal-portfolio",
+  "version": "1.0.0",
+  "description": "Brutalist 'Void' design portfolio for Harsh Malhotra — systems engineer, web developer, and algorithm designer.",
+  "private": true,
+  "type": "module",
+  "author": {
+    "name": "Harsh Malhotra",
+    "email": "harshmalhotra2007@gmail.com",
+    "url": "https://harshmalhotra2007.github.io/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/harshmalhotra2007/personal-portfolio.git"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "lint": "eslint . --ext .js,.html",
+    "format": "prettier --write .",
+    "og-image": "node generate-og-image.js",
+    "sri": "node generate-sri.js"
+  },
+  "devDependencies": {
+    "vite": "^5.4.11",
+    "eslint": "^8.57.1",
+    "prettier": "^3.3.3",
+    "eslint-plugin-html": "^7.1.0"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  },
+  "keywords": [
+    "portfolio",
+    "brutalism",
+    "void-design",
+    "vite",
+    "static-site",
+    "accessibility"
+  ]
+}
