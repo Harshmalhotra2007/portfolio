@@ -1,0 +1,30 @@
+{
+  "$schema": "https://agenticresourcediscovery.org/schema.json",
+  "contact": {
+    "name": "Harsh Malhotra",
+    "email": "harshmalhotra2007@gmail.com"
+  },
+  "resources": [
+    {
+      "name": "Portfolio Home",
+      "uri": "https://harshmalhotra2007.github.io/",
+      "description": "Personal portfolio with bio, skills, projects, and contact form",
+      "keywords": ["portfolio", "developer", "systems", "web"]
+    },
+    {
+      "name": "Weather Dashboard",
+      "uri": "https://harshmalhotra2007.github.io/projects/weather.html",
+      "description": "Interactive weather lookup portal with API integration"
+    },
+    {
+      "name": "Expense Tracker",
+      "uri": "https://harshmalhotra2007.github.io/projects/expense.html",
+      "description": "Client-side expense manager with charts and localStorage"
+    },
+    {
+      "name": "Wild India Map",
+      "uri": "https://harshmalhotra2007.github.io/projects/wild.html",
+      "description": "Leaflet-powered forest and wildlife explorer"
+    }
+  ]
+}

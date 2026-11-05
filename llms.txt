@@ -1,0 +1,27 @@
+# Harsh Malhotra's Portfolio
+
+## Overview
+
+This is the personal portfolio website for **Harsh Malhotra**, a BCA student and systems engineer in Mumbai.
+
+## Website Structure
+
+| Path | Title | Description |
+|------|-------|-------------|
+| `/` | Portfolio | Home page with bio, skills, projects, contact |
+| `/projects/weather.html` | Weather Dashboard | Interactive weather lookup portal |
+| `/projects/expense.html` | Expense Tracker | Personal finance manager with charts |
+| `/projects/wild.html` | Wild India | Forest & wildlife explorer with Leaflet maps |
+
+## Technologies
+
+- Static site: HTML, CSS (Tailwind-inspired), vanilla JavaScript
+- Fonts: Plus Jakarta Sans, Space Grotesk, Space Mono
+- Icons: Font Awesome 6.4.0
+- Maps: Leaflet.js
+
+## Contact
+
+Email: harshmalhotra2007@gmail.com
+GitHub: https://github.com/harshmalhotra2007
+LinkedIn: https://www.linkedin.com/in/harsh-malhotra-2515022a5

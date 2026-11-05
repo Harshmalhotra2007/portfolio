@@ -12,6 +12,8 @@
 
     document.addEventListener('DOMContentLoaded', () => {
         window.scrollTo(0, 0);
+        // Force reveal elements to show on load in case IntersectionObserver fails
+        document.querySelectorAll('.reveal').forEach(el => el.classList.add('active'));
 
         // Centralized contact email — update this single value to
         // change every mailto link and the fallback line in the
@@ -49,36 +51,37 @@
         }
         requestAnimationFrame(raf);
 
-        // Lenis drives scrolling, so native 'scroll' events never fire.
-        // Update the progress bar from Lenis's scroll callback instead.
-        lenis.on('scroll', (e) => {
-            const el = document.getElementById('scrollProgress');
-            if (!el) return;
-            const max = document.documentElement.scrollHeight - window.innerHeight;
-            if (max <= 0) { el.style.width = '0%'; return; }
-            el.style.width = Math.min(100, (e.scrollY / max) * 100) + '%';
-        });
+        // Lenis scroll progress bar
+        if (typeof lenis !== 'undefined' && lenis && lenis.on) {
+            lenis.on('scroll', (e) => {
+                const el = document.getElementById('scrollProgress');
+                if (!el) return;
+                const max = document.documentElement.scrollHeight - window.innerHeight;
+                if (max <= 0) { el.style.width = '0%'; return; }
+                const scrollY = e.y || e.scrollY || 0;
+                el.style.width = Math.min(100, (scrollY / max) * 100) + '%';
+            });
+        }
 
-        // Smooth-scroll anchor links through Lenis so the scroll
-        // animation is consistent (native scroll-behavior is disabled
-        // by Lenis, so plain clicks would jump).
-        document.addEventListener('click', (e) => {
-            const anchor = e.target.closest('a[href^="#"]');
-            if (!anchor) return;
-            const id = anchor.getAttribute('href');
-            if (id.length <= 1) return;
-            const target = document.querySelector(id);
-            if (!target) return;
-            e.preventDefault();
-            lenis.scrollTo(target, { offset: -100, duration: 1.2, easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)) });
-        });
+        // Smooth-scroll anchor links through Lenis
+        if (typeof lenis !== 'undefined' && lenis && lenis.scrollTo) {
+            document.addEventListener('click', (e) => {
+                const anchor = e.target.closest('a[href^="#"]');
+                if (!anchor) return;
+                const id = anchor.getAttribute('href');
+                if (id.length <= 1) return;
+                const target = document.querySelector(id);
+                if (!target) return;
+                e.preventDefault();
+                lenis.scrollTo(target, { offset: -100, duration: 1.2, easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)) });
+            });
+        }
 
-        // 2. Background Canvas Wireframe Globe Drawing Logic
+        // 2. Background Canvas Wireframe Globe (disabled for reduced motion)
         const canvas = document.getElementById('canvas-globe');
         const ctx = canvas.getContext('2d');
 
-        // If user prefers reduced motion, don't animate the globe
-        if (!canvas || prefersReducedMotion) {
+        if (prefersReducedMotion) {
             canvas.style.visibility = 'hidden';
             canvas.style.display = 'none';
         } else {
@@ -103,7 +106,6 @@
                 height = canvas.height = window.innerHeight;
             });
 
-            // Pause the animation when the tab is hidden to save CPU/battery
             let paused = false;
             document.addEventListener('visibilitychange', () => {
                 paused = document.hidden;
@@ -172,13 +174,12 @@
                 const cameraY = (mouseY - centerY) * 0.001;
 
                 const transformedPoints = points.map(p => {
-                    const px = { ...p };
+                    const px = {...p};
                     rotateX(px, rotationAngle + cameraY * 0.5);
                     rotateY(px, rotationAngle * 0.3 + cameraX);
                     return px;
                 });
 
-                // Draw lines between adjacent points
                 for (const p of transformedPoints) {
                     const sx = centerX + (p.x * fov) / (p.z + fov);
                     const sy = centerY + (p.y * fov) / (p.z + fov);
@@ -195,7 +196,6 @@
                         }
                     }
 
-                    // Connect latitude lines
                     if (p.latIdx > 0) {
                         const prevLat = transformedPoints[(p.latIdx - 1) * lonCount + p.lonIdx];
                         if (prevLat) {
@@ -227,7 +227,6 @@
             navLinks.classList.toggle('active');
         });
 
-        // Close mobile menu when clicking a link
         document.querySelectorAll('.nav-links a').forEach(link => {
             link.addEventListener('click', () => {
                 if (navLinks.classList.contains('active')) {
@@ -237,38 +236,135 @@
             });
         });
 
-        // 4. Project Filter Logic
+        // 4. Scroll progress bar (standalone for accessibility)
+        const scrollProgress = document.getElementById('scrollProgress');
+        function updateScrollProgress() {
+            const winHeight = document.documentElement.scrollHeight - window.innerHeight;
+            if (winHeight <= 0) {
+                scrollProgress.style.width = '0%';
+                return;
+            }
+            const scrollPct = Math.min(100, (window.scrollY / winHeight) * 100);
+            scrollProgress.style.width = scrollPct + '%';
+        }
+        window.addEventListener('scroll', updateScrollProgress, { passive: true });
+
+        // 5. Scroll Reveal via IntersectionObserver
+        const reveals = document.querySelectorAll('.reveal');
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                    if (entry.target.id === 'about') {
+                        animateSkills();
+                    }
+                    revealObserver.unobserve(entry.target);
+                }
+            });
+        }, { rootMargin: '0px 0px -130px 0px' });
+        reveals.forEach(reveal => revealObserver.observe(reveal));
+
+        // 6. Active section navbar highlighting
+        const sections = document.querySelectorAll('section');
+        const navLinksItems = document.querySelectorAll('.nav-links a');
+        function updateActiveNav() {
+            let currentId = '';
+            sections.forEach(section => {
+                const top = section.offsetTop - 120;
+                const height = section.clientHeight;
+                if (window.scrollY >= top && window.scrollY < top + height) {
+                    currentId = section.getAttribute('id');
+                }
+            });
+            navLinksItems.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === `#${currentId}`) {
+                    link.classList.add('active');
+                }
+            });
+        }
+        window.addEventListener('scroll', updateActiveNav, { passive: true });
+
+        // 7. Skills segmented loading bars progress animation
+        let skillsAnimated = false;
+        function animateSkills() {
+            if (skillsAnimated) return;
+            const progressBars = document.querySelectorAll('.skill-progress');
+            progressBars.forEach(bar => {
+                const skillLevel = bar.closest('.skill-item').querySelector('.skill-level');
+                const widthVal = skillLevel.getAttribute('data-target') + '%';
+                bar.style.width = widthVal;
+            });
+            skillsAnimated = true;
+        }
+
+        // 8. Dynamic Typing Subtitle in Hero
+        const words = [
+            "writing clean code.",
+            "designing efficient algorithms.",
+            "configuring secure home servers.",
+            "troubleshooting hardware setups.",
+            "exploring systems & networking."
+        ];
+        let wordIndex = 0;
+        let charIndex = 0;
+        let isDeleting = false;
+        const typingSpeed = 60;
+        const erasingSpeed = 30;
+        const delayBetweenWords = 1800;
+        const typingSpan = document.getElementById('typingSubtitle');
+
+        function typeWords() {
+            const currentWord = words[wordIndex];
+            const typed = `BCA STUDENT PASSIONATE ABOUT ${currentWord.substring(0, charIndex)}`;
+            if (isDeleting) {
+                typingSpan.firstChild.nodeValue = typed;
+                charIndex--;
+            } else {
+                typingSpan.firstChild.nodeValue = typed;
+                charIndex++;
+            }
+
+            if (!isDeleting && charIndex === currentWord.length + 1) {
+                isDeleting = true;
+                setTimeout(typeWords, delayBetweenWords);
+            } else if (isDeleting && charIndex === 0) {
+                isDeleting = false;
+                wordIndex = (wordIndex + 1) % words.length;
+                setTimeout(typeWords, 500);
+            } else {
+                setTimeout(typeWords, isDeleting ? erasingSpeed : typingSpeed);
+            }
+        }
+
+        setTimeout(typeWords, 800);
+
+        // 9. Interactive Projects Filter Logic
         const filterButtons = document.querySelectorAll('.filter-btn');
         const projectCards = document.querySelectorAll('.project-card');
 
-        filterButtons.forEach(btn => {
-            btn.classList.remove('active');
-            btn.setAttribute('aria-pressed', 'false');
-        });
-
-        filterButtons.forEach(btn => {
-            btn.addEventListener('click', () => {
-                // Update button states
-                filterButtons.forEach(b => {
-                    b.classList.remove('active');
-                    b.setAttribute('aria-pressed', 'false');
+        filterButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                filterButtons.forEach(btn => {
+                    btn.classList.remove('active');
+                    btn.setAttribute('aria-pressed', 'false');
                 });
-                btn.classList.add('active');
-                btn.setAttribute('aria-pressed', 'true');
+                button.classList.add('active');
+                button.setAttribute('aria-pressed', 'true');
 
-                const filter = btn.dataset.filter;
+                const categoryFilter = button.getAttribute('data-filter');
                 projectCards.forEach(card => {
-                    const categories = card.dataset.category.split(' ');
-                    if (filter === 'all' || categories.includes(filter)) {
-                        card.style.display = 'block';
+                    const categories = card.getAttribute('data-categories').split(' ');
+                    if (categoryFilter === 'all' || categories.includes(categoryFilter)) {
+                        card.classList.remove('hide');
                     } else {
-                        card.style.display = 'none';
+                        card.classList.add('hide');
                     }
                 });
             });
         });
 
-        // 5. Contact Form Submission
+        // 10. Contact Form Submission (Mailto fallback for reliability)
         const contactForm = document.getElementById('contactForm');
         const formStatus = document.getElementById('formStatus');
         const formSuccessOverlay = document.getElementById('formSuccessOverlay');
@@ -279,42 +375,22 @@
             formStatus.textContent = "[ TRANSMISSION IN PROGRESS ]";
             formStatus.className = "form-status";
 
-            try {
-                // Placeholder for real Formspree submission
-                // Using Formspree as an example - you need to create a Formspree form
-                // and replace YOUR_FORMSPREE_ID with the actual form ID
-                const response = await fetch('https://formspree.io/f/YOUR_FORMSPREE_ID', {
-                    method: 'POST',
-                    headers: { 'Accept': 'application/json' },
-                    body: new FormData(contactForm)
-                });
+            // Use mailto: as reliable fallback (Formspree often fails silently)
+            const name = document.getElementById('formName').value.trim();
+            const email = document.getElementById('formEmail').value.trim();
+            const subject = document.getElementById('formSubject').value.trim();
+            const message = document.getElementById('formMessage').value.trim();
 
-                const data = await response.json();
-                if (data.ok) {
-                    contactForm.reset();
-                    formStatus.textContent = "[ TRANSMISSION SENT SUCCESSFULLY ]";
-                    formStatus.className = "form-status success";
-                    formSuccessOverlay.classList.add('active');
-                } else {
-                    const reason = (data.errors && data.errors.length)
-                        ? data.errors.map(e => e.message).join(" ")
-                        : "unknown";
-                    formStatus.textContent = "[ TRANSMISSION REJECTED: " + reason.toUpperCase() + " ]";
-                    formStatus.className = "form-status error";
-                }
-            } catch (error) {
-                // Mock success for development (remove when using real backend)
-                // In production, this would be the catch block above
-                if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') {
-                    contactForm.reset();
-                    formStatus.textContent = "[ TRANSMISSION SENT SUCCESSFULLY ]";
-                    formStatus.className = "form-status success";
-                    formSuccessOverlay.classList.add('active');
-                } else {
-                    formStatus.textContent = "[ CONNECTION ERROR: CHECK NETWORK ]";
-                    formStatus.className = "form-status error";
-                }
-            }
+            // Build mailto link
+            const mailtoLink = `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(subject)}&body=Name: ${encodeURIComponent(name)}%0D%0AEmail: ${encodeURIComponent(email)}%0D%0A%0D%0A${encodeURIComponent(message)}`;
+
+            // Open email client
+            window.location.href = mailtoLink;
+
+            contactForm.reset();
+            formStatus.textContent = "[ TRANSMISSION SENT SUCCESSFULLY ]";
+            formStatus.className = "form-status success";
+            formSuccessOverlay.classList.add('active');
         });
 
         resetFormBtn.addEventListener('click', () => {
@@ -324,8 +400,5 @@
         // Set current footer year dynamically
         const yearSpan = document.getElementById('currentYear');
         yearSpan.textContent = new Date().getFullYear();
-
-        // Trigger initial scroll reveal trigger
-        window.dispatchEvent(new Event('scroll'));
     });
 })();
