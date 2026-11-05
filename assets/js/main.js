@@ -375,22 +375,60 @@
             formStatus.textContent = "[ TRANSMISSION IN PROGRESS ]";
             formStatus.className = "form-status";
 
-            // Use mailto: as reliable fallback (Formspree often fails silently)
             const name = document.getElementById('formName').value.trim();
             const email = document.getElementById('formEmail').value.trim();
             const subject = document.getElementById('formSubject').value.trim();
             const message = document.getElementById('formMessage').value.trim();
 
-            // Build mailto link
+            if (!name || !email || !subject || !message) {
+                formStatus.textContent = "[ ERROR: FILL ALL REQUIRED FIELDS ]";
+                formStatus.className = "form-status error";
+                return;
+            }
+
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                formStatus.textContent = "[ ERROR: INVALID EMAIL FORMAT ]";
+                formStatus.className = "form-status error";
+                return;
+            }
+
+            // Try Formspree first (actually delivers the message to the inbox).
+            // mailto: only opens the visitor's own email client and requires
+            // them to click send, so it is a last-resort fallback, not the
+            // primary path.
             const mailtoLink = `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(subject)}&body=Name: ${encodeURIComponent(name)}%0D%0AEmail: ${encodeURIComponent(email)}%0D%0A%0D%0A${encodeURIComponent(message)}`;
 
-            // Open email client
-            window.location.href = mailtoLink;
-
-            contactForm.reset();
-            formStatus.textContent = "[ TRANSMISSION SENT SUCCESSFULLY ]";
+            formStatus.textContent = "[ DISPATCHING TRANSMISSION... ]";
             formStatus.className = "form-status success";
-            formSuccessOverlay.classList.add('active');
+
+            try {
+                const response = await fetch("https://formspree.io/f/mjgnwygj", {
+                    method: "POST",
+                    headers: {
+                        "Accept": "application/json",
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ name, email, subject, message })
+                });
+
+                if (response.ok) {
+                    contactForm.reset();
+                    formStatus.style.display = 'none';
+                    formSuccessOverlay.classList.add('active');
+                    return;
+                }
+
+                // Formspree rejected the submission — fall back to mailto so
+                // the visitor still has a way to reach the inbox directly.
+                formStatus.textContent = "[ TRANSMISSION FAILED: TRY AGAIN OR MAIL DIRECTLY ]";
+                formStatus.className = "form-status error";
+                window.location.href = mailtoLink;
+            } catch (error) {
+                formStatus.textContent = "[ CONNECTION ERROR: CHECK NETWORK ]";
+                formStatus.className = "form-status error";
+                window.location.href = mailtoLink;
+            }
         });
 
         resetFormBtn.addEventListener('click', () => {
