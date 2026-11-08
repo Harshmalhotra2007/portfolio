@@ -315,13 +315,15 @@
         const typingSpan = document.getElementById('typingSubtitle');
 
         function typeWords() {
+            if (!typingSpan) return;
+            const typingText = typingSpan.querySelector('.typing-text') || typingSpan;
             const currentWord = words[wordIndex];
             const typed = `BCA STUDENT PASSIONATE ABOUT ${currentWord.substring(0, charIndex)}`;
             if (isDeleting) {
-                typingSpan.firstChild.nodeValue = typed;
+                typingText.textContent = typed;
                 charIndex--;
             } else {
-                typingSpan.firstChild.nodeValue = typed;
+                typingText.textContent = typed;
                 charIndex++;
             }
 
