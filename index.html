@@ -44,9 +44,13 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" media="print" onload="this.media='all'" integrity="sha384-iw3OoTErCYJJB9mCa8LNS2hbsQ7M3C0EpIsO/H5+EGAkPGc6rk+V8i04oW/K5xq0" crossorigin="anonymous">
     <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"></noscript>
 
-    <meta name="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://fonts.googleapis.com https://fonts.gstatic.com; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://formspree.io; frame-src 'self' https://openstreetmap.org https://tile.openstreetmap.org;">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="X-Frame-Options" content="DENY">
+    <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
+    <meta http-equiv="Permissions-Policy" content="geolocation=(), microphone=(), camera=()">
+    <meta name="Content-Security-Policy" content="default-src 'self'; style-src 'self' https://cdnjs.cloudflare.com https://fonts.googleapis.com https://fonts.gstatic.com; script-src 'self' https://cdn.jsdelivr.net; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://formspree.io; frame-src 'self' https://openstreetmap.org https://tile.openstreetmap.org; object-src 'none'; base-uri 'self'; form-action 'self' https://formspree.io;">
 
-    <link rel="canonical" href="https://harshportfolio025.netlify.app/">
+    <link rel="canonical" href="https://harshmalhotra2007.github.io/portfolio/">
     <link rel="stylesheet" href="assets/css/styles.css">
 </head>
 <body>
@@ -477,6 +481,11 @@ a888P          ..c6888969""..,"o888888888o.?8888888888"".ooo8888oo.
                 </div>
 
                 <div class="contact-form-wrapper">
+                    <!-- Honeypot field for spam prevention -->
+                    <div style="display: none;">
+                        <label for="formHoneypot">Leave blank if human</label>
+                        <input type="text" id="formHoneypot" name="honeypot" autocomplete="off">
+                    </div>
                     <!-- Form overlay shown on successful mock submit -->
                     <div class="form-success-overlay" id="formSuccessOverlay">
                         <div class="success-icon">
