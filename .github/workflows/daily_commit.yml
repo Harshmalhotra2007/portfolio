@@ -6,6 +6,9 @@ on:
     - cron: '0 12 * * *'
   workflow_dispatch: # Allows you to trigger it manually from the Actions tab
 
+permissions:
+  contents: write
+
 jobs:
   commit:
     runs-on: ubuntu-latest
@@ -13,14 +16,19 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v4
 
+    - name: Pull latest changes
+      run: |
+        git fetch origin
+        git pull --rebase origin ${{ github.ref_name }}
+
     - name: Make a change
       run: |
         echo "Last auto-contribution: $(date)" > last_contribution.txt
 
     - name: Commit and Push
       run: |
-        git config --global user.name "github-actions[bot]"
-        git config --global user.email "github-actions[bot]@users.noreply.github.com"
+        git config user.name "github-actions[bot]"
+        git config user.email "github-actions[bot]@users.noreply.github.com"
         git add last_contribution.txt
-        git commit -m "chore: daily automatic contribution update"
+        git commit -m "chore: daily automatic contribution update — $(date +%Y-%m-%d)"
         git push

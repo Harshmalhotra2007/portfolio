@@ -377,6 +377,23 @@
             formStatus.textContent = "[ TRANSMISSION IN PROGRESS ]";
             formStatus.className = "form-status";
 
+            // Honeypot spam protection - silently drop submissions from bots
+            const honeypot = document.getElementById('formHoneypot')?.value;
+            if (honeypot) {
+                console.log('Spam attempt blocked via honeypot');
+                return;
+            }
+
+            // Client-side rate limiting (30 second cooldown)
+            const now = Date.now();
+            const lastSubmit = localStorage.getItem('lastFormSubmit');
+            const cooldown = 30000;
+            if (lastSubmit && now - parseInt(lastSubmit) < cooldown) {
+                formStatus.textContent = "[ ERROR: PLEASE WAIT 30 SECONDS BEFORE SUBMITTING AGAIN ]";
+                formStatus.className = "form-status error";
+                return;
+            }
+
             const name = document.getElementById('formName').value.trim();
             const email = document.getElementById('formEmail').value.trim();
             const subject = document.getElementById('formSubject').value.trim();
@@ -394,6 +411,9 @@
                 formStatus.className = "form-status error";
                 return;
             }
+
+            // Store submission timestamp
+            localStorage.setItem('lastFormSubmit', now.toString());
 
             // Try Formspree first (actually delivers the message to the inbox).
             // mailto: only opens the visitor's own email client and requires
