@@ -49,8 +49,8 @@
   ],
   "redirects": [
     {
-      "source": "/Expences/index.html",
-      "destination": "/projects/expense.html",
+      "source": "/Expences",
+      "destination": "/projects/expense",
       "permanent": true
     }
   ]
