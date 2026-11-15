@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://harshmalhotra2007.github.io/sitemap.xml
+Sitemap: https://personal-portfolio.vercel.app/sitemap.xml

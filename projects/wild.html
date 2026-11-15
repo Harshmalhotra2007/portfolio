@@ -1,214 +1,441 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Explore India's forest types, national parks, and iconic wildlife through interactive maps — tigers, elephants, snow leopards, and more.">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Explore India's forest types, national parks, and iconic wildlife through interactive maps — tigers, elephants, snow leopards, and more."
+    />
     <title>Wild India - Forests & Wildlife Explorer</title>
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22></text></svg>">
+    <link
+      rel="icon"
+      href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>H</text></svg>"
+    />
 
     <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap"
+      rel="stylesheet"
+    />
 
     <!-- Leaflet Map CSS -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="anonymous"/>
-    
-    <link rel="stylesheet" href="wild.css">
-    <link rel="canonical" href="https://harshmalhotra2007.github.io/portfolio/projects/wild.html">
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+      crossorigin="anonymous"
+    />
+
+    <!-- Content Security Policy -->
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self' https://unpkg.com https://cdn.jsdelivr.net; style-src 'self' https://unpkg.com; img-src 'self' data: https:; font-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com; connect-src 'self'; frame-src 'none'; object-src 'none';"
+    />
+    <!-- Security Headers -->
+    <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+    <meta http-equiv="X-Frame-Options" content="SAMEORIGIN" />
+    <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin" />
+    <meta http-equiv="Permissions-Policy" content="geolocation=(), microphone=(), camera=()" />
+    <link rel="stylesheet" href="wild.css" />
+    <link
+      rel="canonical"
+      href="https://harshmalhotra2007.github.io/portfolio/projects/wild.html"
+    />
 
     <!-- Open Graph & Social Meta Tags -->
-    <meta property="og:title" content="Wild India - Forests & Wildlife Explorer">
-    <meta property="og:description" content="Explore India's forest types, national parks, and iconic wildlife through interactive maps.">
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://harshportfolio025.netlify.app/projects/wild.html">
-    <meta property="og:image" content="https://harshportfolio025.netlify.app/og-image.png">
-    <meta property="og:image:width" content="1200">
-    <meta property="og:image:height" content="630">
-    <meta property="og:site_name" content="Harsh Malhotra Portfolio">
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Wild India - Forests & Wildlife Explorer">
-    <meta name="twitter:description" content="Explore India's forest types, national parks, and iconic wildlife through interactive maps.">
-    <meta name="twitter:image" content="https://harshportfolio025.netlify.app/assets/og-image.png">
-</head>
-<body>
+    <meta
+      property="og:title"
+      content="Wild India - Forests & Wildlife Explorer"
+    />
+    <meta
+      property="og:description"
+      content="Explore India's forest types, national parks, and iconic wildlife through interactive maps."
+    />
+    <meta property="og:type" content="website" />
+    <meta
+      property="og:url"
+      content="https://harshmalhotra2007.github.io/portfolio/projects/wild.html"
+    />
+    <meta
+      property="og:image"
+      content="https://harshmalhotra2007.github.io/portfolio/og-image.png"
+    />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:site_name" content="Harsh Malhotra Portfolio" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta
+      name="twitter:title"
+      content="Wild India - Forests & Wildlife Explorer"
+    />
+    <meta
+      name="twitter:description"
+      content="Explore India's forest types, national parks, and iconic wildlife through interactive maps."
+    />
+    <meta
+      name="twitter:image"
+      content="https://harshmalhotra2007.github.io/portfolio/og-image.png"
+    />
+  </head>
+  <body>
+    <a href="#hero" class="skip-link">Skip to main content</a>
     <nav class="navbar" id="navbar">
-        <div class="nav-container">
-            <button class="logo" onclick="showSection('hero')" style="background:none;border:none;cursor:pointer;">🐾 Wild India</button>
-            <button class="nav-toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false" aria-controls="navMenu">☰</button>
-            <ul class="nav-menu" id="navMenu">
-                <li><a href="../index.html" class="nav-link" style="color: var(--primary-color); font-weight: bold; text-decoration: none;">&larr; Portfolio</a></li>
-                <li><button class="nav-link" data-section="hero" onclick="showSection('hero')">Home</button></li>
-                <li><button class="nav-link" data-section="forests" onclick="showSection('forests')">Forests Map</button></li>
-                <li><button class="nav-link" data-section="forest-types" onclick="showSection('forest-types')">Forest Types</button></li>
-                <li><button class="nav-link" data-section="wildlife" onclick="showSection('wildlife')">Wildlife</button></li>
-                <li><button class="nav-link" data-section="national-parks" onclick="showSection('national-parks')">National Parks</button></li>
-            </ul>
-        </div>
+      <div class="nav-container">
+        <button
+          class="logo logo-button" id="logo-btn"
+        >
+          🐾 Wild India
+        </button>
+        <button
+          class="nav-toggle"
+          id="navToggle"
+          aria-label="Toggle menu"
+          aria-expanded="false"
+          aria-controls="navMenu"
+        >
+          ☰
+        </button>
+        <ul class="nav-menu" id="navMenu">
+          <li>
+            <a
+              href="../index.html"
+              class="nav-link portfolio-link"
+              >&larr; Portfolio</a
+            >
+          </li>
+          <li>
+            <button
+              class="nav-link"
+              data-section="hero"
+              
+            >
+              Home
+            </button>
+          </li>
+          <li>
+            <button
+              class="nav-link"
+              data-section="forests"
+              
+            >
+              Forests Map
+            </button>
+          </li>
+          <li>
+            <button
+              class="nav-link"
+              data-section="forest-types"
+              
+            >
+              Forest Types
+            </button>
+          </li>
+          <li>
+            <button
+              class="nav-link"
+              data-section="wildlife"
+              
+            >
+              Wildlife
+            </button>
+          </li>
+          <li>
+            <button
+              class="nav-link"
+              data-section="national-parks"
+              
+            >
+              National Parks
+            </button>
+          </li>
+        </ul>
+      </div>
     </nav>
 
+    <main role="main">
     <section id="hero" class="hero">
-        <div class="hero-content">
-            <h1>Discover Wild India</h1>
-            <p>Explore the majestic forests, diverse wildlife, and breathtaking natural heritage</p>
-            <button class="cta-button" onclick="showSection('forests')">Explore the Map</button>
-        </div>
+      <div class="hero-content">
+        <h1>Discover Wild India</h1>
+        <p>
+          Explore the majestic forests, diverse wildlife, and breathtaking
+          natural heritage
+        </p>
+        <button class="cta-button" id="cta-btn" >
+          Explore the Map
+        </button>
+      </div>
     </section>
 
     <section id="forests" class="section fade-in">
-        <h2 class="section-title">The Green Heart of India</h2>
-        
-        <div class="stats-container">
-            <div class="stat-block">
-                <div class="stat-value">16</div>
-                <div class="stat-label">Major Forest Types</div>
-                <div class="stat-desc">Per the Champion & Seth classification — 5 representative types are mapped below</div>
-            </div>
-            <div class="stat-block">
-                <div class="stat-value">25.17%</div>
-                <div class="stat-label">Total Green Cover</div>
-                <div class="stat-desc">The combined forest and tree cover across the nation</div>
-            </div>
-            <div class="stat-block">
-                <div class="stat-value">4</div>
-                <div class="stat-label">Global Hotspots</div>
-                <div class="stat-desc">The Himalayas, Western Ghats, Indo-Burma, and Sundaland</div>
-            </div>
-        </div>
+      <h2 class="section-title">The Green Heart of India</h2>
 
-        <div class="section-intro-container">
-            <h3 class="section-intro-subtitle">Interactive Habitat Map</h3>
-            <p class="section-intro-text">
-                Explore the high-resolution satellite imagery below. We have tracked the primary habitats of India's most iconic and endangered species. <strong>Click on any of the pins</strong> to reveal which animal rules that territory.
-            </p>
+      <div class="stats-container">
+        <div class="stat-block">
+          <div class="stat-value">16</div>
+          <div class="stat-label">Major Forest Types</div>
+          <div class="stat-desc">
+            Per the Champion & Seth classification — 5 representative types are
+            mapped below
+          </div>
         </div>
+        <div class="stat-block">
+          <div class="stat-value">25.17%</div>
+          <div class="stat-label">Total Green Cover</div>
+          <div class="stat-desc">
+            The combined forest and tree cover across the nation
+          </div>
+        </div>
+        <div class="stat-block">
+          <div class="stat-value">4</div>
+          <div class="stat-label">Global Hotspots</div>
+          <div class="stat-desc">
+            The Himalayas, Western Ghats, Indo-Burma, and Sundaland
+          </div>
+        </div>
+      </div>
 
-        <div class="map-wrapper">
-            <div id="india-map-container" style="border: 2px solid rgba(255, 215, 0, 0.5);"></div>
-            <div class="map-loader" id="forests-loader"><div class="spinner"></div><span>Loading map…</span></div>
+      <div class="section-intro-container">
+        <h3 class="section-intro-subtitle">Interactive Habitat Map</h3>
+        <p class="section-intro-text">
+          Explore the high-resolution satellite imagery below. We have tracked
+          the primary habitats of India's most iconic and endangered species.
+          <strong>Click on any of the pins</strong> to reveal which animal rules
+          that territory.
+        </p>
+      </div>
+
+      <div class="map-wrapper">
+        <div
+          id="india-map-container"
+          class="gold-border"
+        ></div>
+        <div class="map-loader" id="forests-loader">
+          <div class="spinner"></div>
+          <span>Loading map…</span>
         </div>
+      </div>
     </section>
 
     <section id="forest-types" class="section fade-in">
-        <h2 class="section-title">Major Forest Biomes of India</h2>
-        
-        <p class="section-intro-text" style="margin-bottom: 2.5rem;">
-            Explore the map below to see the massive geographical regions that host India's 5 major forest ecosystems.
-        </p>
+      <h2 class="section-title">Major Forest Biomes of India</h2>
 
-        <div class="map-wrapper">
-            <div id="types-map-container" style="border: 2px solid rgba(255, 255, 255, 0.2);"></div>
-            <div class="map-loader" id="forest-types-loader"><div class="spinner"></div><span>Loading map…</span></div>
+      <p class="section-intro-text margin-bottom-2-5rem">
+        Explore the map below to see the massive geographical regions that host
+        India's 5 major forest ecosystems.
+      </p>
+
+      <div class="map-wrapper">
+        <div
+          id="types-map-container"
+          class="silver-border"
+        ></div>
+        <div class="map-loader" id="forest-types-loader">
+          <div class="spinner"></div>
+          <span>Loading map…</span>
+        </div>
+      </div>
+
+      <div class="wildlife-grid margin-top-4rem">
+        <div class="wildlife-card pointer-default">
+          <img
+            src="https://upload.wikimedia.org/wikipedia/commons/c/c2/%EC%99%84%EB%8F%84_%EC%A3%BC%EB%8F%84_%EC%83%81%EB%A1%9D%EC%88%98%EB%A6%BC.jpg"
+            alt="Tropical Evergreen Forest"
+            class="card-image"
+            loading="lazy"
+          />
+          <div class="card-content">
+            <h3 class="card-title">Tropical Evergreen</h3>
+            <p class="forest-location">
+              Western Ghats, Northeast India, Andamans
+            </p>
+            <p class="forest-description">
+              Found in areas receiving over 200cm of annual rainfall. These
+              forests are dense, multi-layered, and retain their green canopy
+              year-round, supporting immense biodiversity.
+            </p>
+          </div>
         </div>
 
-        <div class="wildlife-grid" style="margin-top: 4rem;">
-            <div class="wildlife-card" style="cursor: default;">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/c/c2/%EC%99%84%EB%8F%84_%EC%A3%BC%EB%8F%84_%EC%83%81%EB%A1%9D%EC%88%98%EB%A6%BC.jpg" alt="Tropical Evergreen Forest" class="card-image" loading="lazy">
-                <div class="card-content">
-                    <h3 class="card-title">Tropical Evergreen</h3>
-                    <p style="color: var(--primary-color); font-style: italic; font-size: 0.95rem;">Western Ghats, Northeast India, Andamans</p>
-                    <p style="margin-top: 0.8rem; color: var(--text-muted);">Found in areas receiving over 200cm of annual rainfall. These forests are dense, multi-layered, and retain their green canopy year-round, supporting immense biodiversity.</p>
-                </div>
-            </div>
-
-            <div class="wildlife-card" style="cursor: default;">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/dd/Kambhalakonda_EDC_Vizag.jpg/1280px-Kambhalakonda_EDC_Vizag.jpg" alt="Tropical Deciduous Forest" class="card-image" loading="lazy">
-                <div class="card-content">
-                    <h3 class="card-title">Tropical Deciduous</h3>
-                    <p style="color: var(--primary-color); font-style: italic; font-size: 0.95rem;">Central & South India, Himalayan Foothills</p>
-                    <p style="margin-top: 0.8rem; color: var(--text-muted);">Also known as "Monsoon Forests," these are the most widespread in India. Trees shed their leaves during the dry spring to conserve water before the monsoon arrives.</p>
-                </div>
-            </div>
-
-            <div class="wildlife-card" style="cursor: default;">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/f/ff/Jodigere.jpg" alt="Tropical Thorn Forest" class="card-image" loading="lazy">
-                <div class="card-content">
-                    <h3 class="card-title">Tropical Thorn</h3>
-                    <p style="color: var(--primary-color); font-style: italic; font-size: 0.95rem;">Rajasthan, Gujarat, Punjab, Haryana</p>
-                    <p style="margin-top: 0.8rem; color: var(--text-muted);">Found in arid, semi-desert regions with less than 70cm of rainfall. Characterized by scattered, deep-rooted thorny trees (like Babool) and extensive scrub vegetation.</p>
-                </div>
-            </div>
-
-            <div class="wildlife-card" style="cursor: default;">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/Sarband-kashmir.JPG" alt="Montane Forests" class="card-image" loading="lazy">
-                <div class="card-content">
-                    <h3 class="card-title">Montane (Mountain)</h3>
-                    <p style="color: var(--primary-color); font-style: italic; font-size: 0.95rem;">Himalayas, High-altitude Western Ghats</p>
-                    <p style="margin-top: 0.8rem; color: var(--text-muted);">These forests change drastically with altitude, transitioning from subtropical pines at the base, to temperate oaks, and finally to alpine mosses and junipers near the snowline.</p>
-                </div>
-            </div>
-
-            <div class="wildlife-card" style="cursor: default;">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/ec/Pelicans_and_double_breasted_cormorants_in_the_mangroves.jpg/500px-Pelicans_and_double_breasted_cormorants_in_the_mangroves.jpg" alt="Mangrove Forests" class="card-image" loading="lazy">
-                <div class="card-content">
-                    <h3 class="card-title">Mangrove (Tidal)</h3>
-                    <p style="color: var(--primary-color); font-style: italic; font-size: 0.95rem;">Sundarbans, Mahanadi & Godavari Deltas</p>
-                    <p style="margin-top: 0.8rem; color: var(--text-muted);">Found in coastal estuarine regions affected by tides. The trees have specialized aerial "breathing roots" that allow them to survive in harsh, muddy, brackish saltwater.</p>
-                </div>
-            </div>
+        <div class="wildlife-card pointer-default">
+          <img
+            src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/dd/Kambhalakonda_EDC_Vizag.jpg/1280px-Kambhalakonda_EDC_Vizag.jpg"
+            alt="Tropical Deciduous Forest"
+            class="card-image"
+            loading="lazy"
+          />
+          <div class="card-content">
+            <h3 class="card-title">Tropical Deciduous</h3>
+            <p class="forest-location">
+              Central & South India, Himalayan Foothills
+            </p>
+            <p class="forest-description">
+              Also known as "Monsoon Forests," these are the most widespread in
+              India. Trees shed their leaves during the dry spring to conserve
+              water before the monsoon arrives.
+            </p>
+          </div>
         </div>
+
+        <div class="wildlife-card pointer-default">
+          <img
+            src="https://upload.wikimedia.org/wikipedia/commons/f/ff/Jodigere.jpg"
+            alt="Tropical Thorn Forest"
+            class="card-image"
+            loading="lazy"
+          />
+          <div class="card-content">
+            <h3 class="card-title">Tropical Thorn</h3>
+            <p
+              class="forest-location">
+              Rajasthan, Gujarat, Punjab, Haryana
+            </p>
+            <p class="forest-description">
+              Found in arid, semi-desert regions with less than 70cm of
+              rainfall. Characterized by scattered, deep-rooted thorny trees
+              (like Babool) and extensive scrub vegetation.
+            </p>
+          </div>
+        </div>
+
+        <div class="wildlife-card pointer-default">
+          <img
+            src="https://upload.wikimedia.org/wikipedia/commons/6/6b/Sarband-kashmir.JPG"
+            alt="Montane Forests"
+            class="card-image"
+            loading="lazy"
+          />
+          <div class="card-content">
+            <h3 class="card-title">Montane (Mountain)</h3>
+            <p
+              class="forest-location">
+              Himalayas, High-altitude Western Ghats
+            </p>
+            <p class="forest-description">
+              These forests change drastically with altitude, transitioning from
+              subtropical pines at the base, to temperate oaks, and finally to
+              alpine mosses and junipers near the snowline.
+            </p>
+          </div>
+        </div>
+
+        <div class="wildlife-card pointer-default">
+          <img
+            src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/ec/Pelicans_and_double_breasted_cormorants_in_the_mangroves.jpg/500px-Pelicans_and_double_breasted_cormorants_in_the_mangroves.jpg"
+            alt="Mangrove Forests"
+            class="card-image"
+            loading="lazy"
+          />
+          <div class="card-content">
+            <h3 class="card-title">Mangrove (Tidal)</h3>
+            <p class="forest-location">
+              Sundarbans, Mahanadi & Godavari Deltas
+            </p>
+            <p class="forest-description">
+              Found in coastal estuarine regions affected by tides. The trees
+              have specialized aerial "breathing roots" that allow them to
+              survive in harsh, muddy, brackish saltwater.
+            </p>
+          </div>
+        </div>
+      </div>
     </section>
 
     <section id="wildlife" class="section fade-in">
-        <h2 class="section-title">Iconic Wildlife of India</h2>
+      <h2 class="section-title">Iconic Wildlife of India</h2>
 
-        <div class="search-filter-wrapper">
-            <div class="search-bar-container">
-                <span class="search-icon"></span>
-                <input type="text" id="wildlifeSearch" class="search-input" placeholder="Search wildlife by name, scientific name, or habitat..." aria-label="Search wildlife">
-            </div>
-            <div class="filter-tags" id="filterTags" role="group" aria-label="Filter wildlife by status">
-                <button class="filter-tag active" data-filter="all">All Species</button>
-                <button class="filter-tag" data-filter="critically endangered">Critically Endangered</button>
-                <button class="filter-tag" data-filter="endangered">Endangered</button>
-                <button class="filter-tag" data-filter="vulnerable">Vulnerable</button>
-            </div>
+      <div class="search-filter-wrapper">
+        <div class="search-bar-container">
+          <span class="search-icon"></span>
+          <input
+            type="text"
+            id="wildlifeSearch"
+            class="search-input"
+            placeholder="Search wildlife by name, scientific name, or habitat..."
+            aria-label="Search wildlife"
+          />
         </div>
+        <div
+          class="filter-tags"
+          id="filterTags"
+          role="group"
+          aria-label="Filter wildlife by status"
+        >
+          <button class="filter-tag active" data-filter="all">
+            All Species
+          </button>
+          <button class="filter-tag" data-filter="critically endangered">
+            Critically Endangered
+          </button>
+          <button class="filter-tag" data-filter="endangered">
+            Endangered
+          </button>
+          <button class="filter-tag" data-filter="vulnerable">
+            Vulnerable
+          </button>
+        </div>
+      </div>
 
-        <div class="wildlife-grid" id="wildlife-grid"></div>
+      <div class="wildlife-grid" id="wildlife-grid"></div>
     </section>
 
     <section id="national-parks" class="section fade-in">
-        <h2 class="section-title">National Parks of India</h2>
-        
-        <div class="stats-container">
-            <div class="stat-block">
-                <div class="stat-value">107</div>
-                <div class="stat-label">National Parks</div>
-            </div>
-            <div class="stat-block">
-                <div class="stat-value">44,403</div>
-                <div class="stat-label">Sq. Km Protected Area</div>
-            </div>
-            <div class="stat-block">
-                <div class="stat-value">1.35%</div>
-                <div class="stat-label">Of India's Geography</div>
-            </div>
-        </div>
+      <h2 class="section-title">National Parks of India</h2>
 
-        <p class="section-intro-text" style="margin-bottom: 2.5rem;">
-            Explore an interactive map featuring 15 of India's most renowned and spectacular National Parks.
-        </p>
-
-        <div class="map-wrapper">
-            <div id="parks-map-container"></div>
-            <div class="map-loader" id="national-parks-loader"><div class="spinner"></div><span>Loading map…</span></div>
+      <div class="stats-container">
+        <div class="stat-block">
+          <div class="stat-value">107</div>
+          <div class="stat-label">National Parks</div>
         </div>
+        <div class="stat-block">
+          <div class="stat-value">44,403</div>
+          <div class="stat-label">Sq. Km Protected Area</div>
+        </div>
+        <div class="stat-block">
+          <div class="stat-value">1.35%</div>
+          <div class="stat-label">Of India's Geography</div>
+        </div>
+      </div>
+
+      <p class="section-intro-text margin-bottom-2-5rem">
+        Explore an interactive map featuring 15 of India's most renowned and
+        spectacular National Parks.
+      </p>
+
+      <div class="map-wrapper">
+        <div id="parks-map-container"></div>
+        <div class="map-loader" id="national-parks-loader">
+          <div class="spinner"></div>
+          <span>Loading map…</span>
+        </div>
+      </div>
     </section>
 
-    <div id="modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
-        <div class="modal-content">
-            <button class="close" onclick="closeModal()" aria-label="Close dialog">&times;</button>
-            <div id="modal-body"></div>
-        </div>
+    <div
+      id="modal"
+      class="modal"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="modal-title"
+    >
+      <div class="modal-content">
+        <button class="close" id="modal-close"  aria-label="Close dialog">
+          &times;
+        </button>
+        <div id="modal-body"></div>
+      </div>
     </div>
+    </main>
 
     <!-- Leaflet Map JS -->
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script
+      src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+      integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+      crossorigin=""
+    ></script>
 
-    <script src="wild.js"></script>
-</body>
+    <script type="module" src="wild.js"></script>
+  </body>
 </html>
-
-

@@ -8,12 +8,12 @@ multi-page static site with zero runtime framework dependencies.
 
 ## Pages
 
-| Page | Path | Description |
-|---|---|---|
-| Home | `index.html` | Hero, wireframe globe canvas, skills, project grid, contact form |
-| Weather | `projects/weather.html` | Interactive weather dashboard |
+| Page            | Path                    | Description                                                                                |
+| --------------- | ----------------------- | ------------------------------------------------------------------------------------------ |
+| Home            | `index.html`            | Hero, wireframe globe canvas, skills, project grid, contact form                           |
+| Weather         | `projects/weather.html` | Interactive weather dashboard                                                              |
 | Expense Tracker | `projects/expense.html` | Full client-side expense manager (recurring transactions, budgets, charts, webhook import) |
-| Wild India | `projects/wild.html` | Leaflet-powered forests, wildlife & national-parks explorer |
+| Wild India      | `projects/wild.html`    | Leaflet-powered forests, wildlife & national-parks explorer                                |
 
 ## Design System — "The Void"
 
@@ -50,7 +50,7 @@ npm run og-image   # regenerate assets/og-image.png (node generate-og-image.js)
 The site is intentionally **static and multi-page**. Vite treats each HTML
 file as an entry point (`vite.config.js`), hashes local assets, and leaves
 CDN `<script>`/`<link>` tags untouched. Third-party libraries are kept on
-CDNs *on purpose* with `integrity` + `crossorigin` attributes — they are not
+CDNs _on purpose_ with `integrity` + `crossorigin` attributes — they are not
 bundled or npm-installed.
 
 ## Security & Quality
