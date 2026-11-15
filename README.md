@@ -4,7 +4,7 @@ A brutalist, high-contrast personal portfolio for **Harsh Malhotra** — systems
 engineer, web developer, and algorithm designer. Built as a fast, accessible,
 multi-page static site with zero runtime framework dependencies.
 
-**Live:** https://harshmalhotra2007.github.io/
+**Live:** https://personal-portfolio.vercel.app/
 
 ## Pages
 
