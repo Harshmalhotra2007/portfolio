@@ -7,23 +7,23 @@
   "resources": [
     {
       "name": "Portfolio Home",
-      "uri": "https://personal-portfolio.vercel.app/",
+      "uri": "https://harshportfolio025.vercel.app/",
       "description": "Personal portfolio with bio, skills, projects, and contact form",
       "keywords": ["portfolio", "developer", "systems", "web"]
     },
     {
       "name": "Weather Dashboard",
-      "uri": "https://personal-portfolio.vercel.app/projects/weather",
+      "uri": "https://harshportfolio025.vercel.app/projects/weather",
       "description": "Interactive weather lookup portal with API integration"
     },
     {
       "name": "Expense Tracker",
-      "uri": "https://personal-portfolio.vercel.app/projects/expense",
+      "uri": "https://harshportfolio025.vercel.app/projects/expense",
       "description": "Client-side expense manager with charts and localStorage"
     },
     {
       "name": "Wild India Map",
-      "uri": "https://personal-portfolio.vercel.app/projects/wild",
+      "uri": "https://harshportfolio025.vercel.app/projects/wild",
       "description": "Leaflet-powered forest and wildlife explorer"
     }
   ]

@@ -1,25 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://personal-portfolio.vercel.app/</loc>
+    <loc>https://harshportfolio025.vercel.app/</loc>
     <lastmod>2026-11-13</lastmod>
     <changefreq>monthly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://personal-portfolio.vercel.app/projects/weather</loc>
+    <loc>https://harshportfolio025.vercel.app/projects/weather</loc>
     <lastmod>2026-11-13</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://personal-portfolio.vercel.app/projects/expense</loc>
+    <loc>https://harshportfolio025.vercel.app/projects/expense</loc>
     <lastmod>2026-11-13</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://personal-portfolio.vercel.app/projects/wild</loc>
+    <loc>https://harshportfolio025.vercel.app/projects/wild</loc>
     <lastmod>2026-11-13</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
