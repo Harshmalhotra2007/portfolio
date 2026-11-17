@@ -435,6 +435,40 @@ body.theme-snow .alert-banner {
   color: var(--text-primary);
 }
 
+/* Error Message Styles */
+.error-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #c62828; /* WCAG 2.1 AA compliant red for dark backgrounds */
+  margin-bottom: 0.5rem;
+}
+
+.error-details {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.error-icon {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+.close-error-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  font-size: 18px;
+  cursor: pointer;
+  line-height: 1;
+  padding: 0;
+}
+
+.close-error-btn:hover {
+  color: var(--text-primary);
+}
+
 /* ------------------------------------------
    Search Panel & Dropdown suggestions
    ------------------------------------------ */

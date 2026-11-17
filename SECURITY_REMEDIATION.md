@@ -240,13 +240,13 @@ The expense tracker uses LocalStorage for persistence. Ensure:
 
 ## 📊 Implementation Priority Matrix
 
-| Priority | Finding | Effort | Risk Reduction | Deadline |
-|----------|---------|--------|----------------|----------|
-| 🔴 Critical | Remove tracked node_modules/backups | Low | High | Immediate |
-| ⚠️ High | Harden CSP (remove unsafe-inline) | Medium | High | 1 week |
-| ⚠️ High | Add honeypot to contact form | Low | Medium | 1 week |
-| 🟡 Medium | Audit innerHTML usage in wild.js | Low | Medium | 2 weeks |
-| 🟡 Medium | Add rate limiting to contact form | Low | Medium | 2 weeks |
+| Priority | Finding | Effort | Risk Reduction | Deadline | Status |
+|----------|---------|--------|----------------|----------|--------|
+| 🔴 Critical | Remove tracked node_modules/backups | Low | High | Immediate | ✅ **DONE** |
+| ⚠️ High | Harden CSP (remove unsafe-inline) | Medium | High | 1 week | ✅ **DONE** |
+| ⚠️ High | Add honeypot to contact form | Low | Medium | 1 week | ✅ **DONE** |
+| 🟡 Medium | Audit innerHTML usage in wild.js | Low | Medium | 2 weeks | ✅ **DONE** (Leaflet dynamic import uses safe templates) |
+| 🟡 Medium | Add rate limiting to contact form | Low | Medium | 2 weeks | ✅ **DONE** (5 min cooldown) |
 
 ---
 
@@ -257,7 +257,15 @@ The expense tracker uses LocalStorage for persistence. Ensure:
 - [x] Expense tracker XSS protection mechanisms validated
 - [x] Contact form submission flow validated
 - [x] LocalStorage import validation validated
-- [ ] Remediation code needs to be implemented
+- [x] Remediation code implemented
+- [x] Contrasting text colors updated (text-secondary: #cccccc, text-muted: #aaaaaa)
+- [x] Filter button touch targets meet 44px minimum
+- [x] Canvas accessibility improved (aria-label, role=img)
+- [x] ASCII art hidden from screen readers
+- [x] Rate limiting increased to 5 minutes
+- [x] Nested git repos added to .gitignore
+- [x] One-off scripts added to .gitignore
+- [x] pnpm-lock.yaml added to .gitignore
 
 ---
 
@@ -295,7 +303,10 @@ For questions about this remediation plan or assistance with implementation:
 - Test changes in a development environment first
 - Deploy to staging before production
 
-**Next Steps:**
+**Next Steps (Updated 2026-11-15):
+1. ✅ Critical fixes implemented (CSP hardened, honeypot added, node_modules/backups removed from git)
+2. ✅ High priority items implemented (rate limiting 5min, contrast fixes, touch targets)
+3. Medium priority items complete (innerHTML audit, dynamic imports)**
 1. Implement Critical fixes immediately
 2. Schedule High priority items for this week
 3. Plan Medium priority items for next sprint
@@ -304,4 +315,4 @@ For questions about this remediation plan or assistance with implementation:
 
 *Generated: 2026-11-08*
 *Security Review by: Portfolio Security Architect*
-*Status: Ready for Implementation*
+*Status: All Critical, High, and Medium Priority Items Complete - Next Sprint Focus: minor optimizations.*

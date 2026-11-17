@@ -1,4 +1,10 @@
 document.addEventListener("DOMContentLoaded", () => {
+  // XSS prevention: HTML escape utility for user data
+  function escapeHTML(str) {
+    if (typeof str !== 'string') return '';
+    return str.replace(/&/g, '&').replace(/</g, '<').replace(/>/g, '>').replace(/"/g, '"').replace(/'/g, '&#039;');
+  }
+
   const wildlifeData = [
     {
       name: "Bengal Tiger",
@@ -225,20 +231,20 @@ document.addEventListener("DOMContentLoaded", () => {
     const statusClass = animal.status.toLowerCase().replace(/ /g, "-");
 
     modalBody.innerHTML = `
-            <img src="${animal.image}" alt="${animal.name}" class="modal-image">
-            <h2 id="modal-title" class="modal-title-styled">${animal.name}</h2>
-            <p class="modal-scientific">${animal.scientific}</p>
+            <img src="${escapeHTML(animal.image)}" alt="${escapeHTML(animal.name)}" class="modal-image">
+            <h2 id="modal-title" class="modal-title-styled">${escapeHTML(animal.name)}</h2>
+            <p class="modal-scientific">${escapeHTML(animal.scientific)}</p>
             <div class="modal-grid">
                 <div>
                     <p class="modal-label">Primary Habitat</p>
-                    <p class="modal-value">${animal.habitat}</p>
+                    <p class="modal-value">${escapeHTML(animal.habitat)}</p>
                 </div>
                 <div>
                     <p class="modal-label">Conservation Status</p>
-                    <span class="status-badge ${statusClass} status-badge-margin">${animal.status}</span>
+                    <span class="status-badge ${statusClass} status-badge-margin">${escapeHTML(animal.status)}</span>
                 </div>
             </div>
-            <p class="modal-detail-text">${animal.info}</p>
+            <p class="modal-detail-text">${escapeHTML(animal.info)}</p>
         `;
     modal.style.display = "flex";
     document.body.style.overflow = "hidden";
@@ -287,12 +293,12 @@ document.addEventListener("DOMContentLoaded", () => {
       const statusClass = animal.status.toLowerCase().replace(/ /g, "-");
 
       card.innerHTML = `
-                <img src="${animal.image}" alt="${animal.name}" class="card-image" loading="lazy">
+                <img src="${escapeHTML(animal.image)}" alt="${escapeHTML(animal.name)}" class="card-image" loading="lazy">
                 <div class="card-content">
-                    <span class="status-badge ${statusClass}">${animal.status}</span>
-                    <h3 class="card-title">${animal.name}</h3>
-                    <p class="card-scientific">${animal.scientific}</p>
-                    <p class="card-habitat"><b>Habitat:</b> ${animal.habitat}</p>
+                    <span class="status-badge ${statusClass}">${escapeHTML(animal.status)}</span>
+                    <h3 class="card-title">${escapeHTML(animal.name)}</h3>
+                    <p class="card-scientific">${escapeHTML(animal.scientific)}</p>
+                    <p class="card-habitat"><b>Habitat:</b> ${escapeHTML(animal.habitat)}</p>
                 </div>
             `;
       card.onclick = () => openModal(wildlifeData.indexOf(animal));
@@ -323,14 +329,14 @@ document.addEventListener("DOMContentLoaded", () => {
     wildlifeData.forEach((animal, _index) => {
       if (animal.coords) {
         const marker = L.marker(animal.coords).addTo(forestMapInstance);
-        marker.bindTooltip(`<b>${animal.name}</b>`, {
+        marker.bindTooltip(`<b>${escapeHTML(animal.name)}</b>`, {
           direction: "top",
           offset: [0, -10],
         });
         const popupContent = `
                     <div class="popup-container">
-                        <h4 class="popup-title">${animal.name}</h4>
-                        <img src="${animal.image}" alt="${animal.name}" class="popup-image">
+                        <h4 class="popup-title">${escapeHTML(animal.name)}</h4>
+                        <img src="${escapeHTML(animal.image)}" alt="${escapeHTML(animal.name)}" class="popup-image">
                         <button onclick="openModal(${wildlifeData.indexOf(animal)})" class="popup-button">View Details</button>
                     </div>
                 `;
@@ -366,8 +372,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
       polygon.bindPopup(`
                 <div class="popup-container-padded">
-                    <h4 class="popup-title-large">${type.name}</h4>
-                    <p class="popup-text-muted">${type.info}</p>
+                    <h4 class="popup-title-large">${escapeHTML(type.name)}</h4>
+                    <p class="popup-text-muted">${escapeHTML(type.info)}</p>
                 </div>
             `);
 
@@ -397,15 +403,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
     nationalParksData.forEach((park) => {
       const marker = L.marker(park.coords).addTo(parksMapInstance);
-      marker.bindTooltip(`<b>${park.name}</b>`, {
+      marker.bindTooltip(`<b>${escapeHTML(park.name)}</b>`, {
         direction: "top",
         offset: [0, -10],
       });
       const popupContent = `
                 <div class="popup-container-minwidth">
-                    <h4 class="popup-title-medium">${park.name}</h4>
-                    <p class="popup-text-state"><strong>${park.state}</strong> (Est. ${park.est})</p>
-                    <p class="popup-text-info">${park.info}</p>
+                    <h4 class="popup-title-medium">${escapeHTML(park.name)}</h4>
+                    <p class="popup-text-state"><strong>${escapeHTML(park.state)}</strong> (Est. ${escapeHTML(park.est)})</p>
+                    <p class="popup-text-info">${escapeHTML(park.info)}</p>
                 </div>
             `;
       marker.bindPopup(popupContent);

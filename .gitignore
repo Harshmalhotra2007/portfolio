@@ -39,3 +39,11 @@ backups/
 # Lighthouse reports
 lighthouse-report.json
 lighthouse-*.json
+# Nested git repos and one-off scripts (assets already migrated to projects/)
+weather/
+wild/
+scripts/
+
+# pnpm lockfile (project uses npm)
+pnpm-lock.yaml
+.vercel

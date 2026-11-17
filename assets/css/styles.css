@@ -9,8 +9,8 @@
   --bg-card: rgba(8, 8, 8, 0.7);
 
   --text-primary: #ffffff;
-  --text-secondary: #888888;
-  --text-muted: #999999; /* Fixed: 4.5:1 contrast on #000000 */
+  --text-secondary: #cccccc; /* Updated: meets 4.5:1 contrast on #000000 */
+  --text-muted: #aaaaaa; /* Updated: meets 4.5:1 contrast on #000000 */
 
   --accent-primary: #00f0ff; /* Electric Cyan */
   --accent-secondary: #00ff66; /* Acid Green */
