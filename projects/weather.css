@@ -1532,6 +1532,11 @@ body.theme-snow .pollutant-progress-track {
   border-radius: 10px;
   background: var(--accent-color);
   transition: width 1s cubic-bezier(0.16, 1, 0.3, 1);
+  width: 0%;
+}
+
+.pollutant-progress-fill[data-width] {
+  width: attr(data-width, 0%);
 }
 
 .pollutant-value {
@@ -1839,6 +1844,37 @@ body.theme-snow .pressure-sparkline-container {
 .pressure-sparkline {
   overflow: visible;
   margin: 10px 0;
+}
+
+.pressure-sparkline-falling {
+  color: #e74c3c;
+}
+
+.pressure-sparkline-rising {
+  color: #3498db;
+}
+
+.pressure-sparkline-stable {
+  color: #2ecc71;
+}
+
+.trend-icon-colored {
+  width: 14px;
+  height: 14px;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.trend-icon-falling {
+  color: #e74c3c;
+}
+
+.trend-icon-rising {
+  color: #3498db;
+}
+
+.trend-icon-stable {
+  color: #2ecc71;
 }
 
 .pressure-trend-label {
@@ -2311,14 +2347,10 @@ select,
   color: var(--sparkline-color, currentColor);
 }
 
-.trend-icon-colored {
-  width: 14px;
-  height: 14px;
-  color: var(--trend-color, currentColor);
-  display: inline-block;
-  vertical-align: middle;
+.pollutant-progress-fill-colored {
+  width: 0%;
 }
 
-.pollutant-progress-fill-colored {
-  width: var(--pollutant-width, 0%);
+.pollutant-progress-fill-colored[data-width] {
+  width: attr(data-width, 0%);
 }

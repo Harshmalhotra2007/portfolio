@@ -2086,12 +2086,12 @@ function generatePressureModalContent() {
     sparklineHtml = `
       <div class="pressure-sparkline-container">
         <span class="label">${pressures.length}-Hour Pressure Trend</span>
-        <svg width="100" height="30" class="pressure-sparkline pressure-sparkline-colored" viewBox="0 0 100 30" style="--sparkline-color: ${sparklineStroke}">
+        <svg width="100" height="30" class="pressure-sparkline pressure-sparkline-colored pressure-sparkline-${trendText.toLowerCase()}" viewBox="0 0 100 30">
           <path d="${dPath}" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
           ${pointsHtml}
         </svg>
         <div class="pressure-trend-label">
-          <i data-lucide="${trendIcon}" class="trend-icon trend-icon-colored" style="--trend-color: ${sparklineStroke}"></i>
+          <i data-lucide="${trendIcon}" class="trend-icon trend-icon-colored trend-icon-${trendText.toLowerCase()}"></i>
           <span>${trendText} (${pressures[0]} → ${pressures[pressures.length - 1]} hPa over last ${pressures.length}h)</span>
         </div>
       </div>
@@ -2170,7 +2170,7 @@ function createPollutantRow(label, val, unit) {
       <span class="pollutant-name">${label}</span>
       <div class="pollutant-bar-wrapper">
         <div class="pollutant-progress-track">
-          <div class="pollutant-progress-fill ${style.color} pollutant-progress-fill-colored" style="--pollutant-width: ${style.pct}%"></div>
+          <div class="pollutant-progress-fill ${style.color} pollutant-progress-fill-colored" data-width="${style.pct}"></div>
         </div>
       </div>
       <span class="pollutant-value">${val.toFixed(1)} ${unit}</span>

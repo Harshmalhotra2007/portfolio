@@ -411,22 +411,22 @@
     const isAllGreen = passCount === total;
 
     overlay.innerHTML = `
-            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.25rem;">
-                <h4 style="margin: 0; font-family: var(--font-heading); font-size: 0.95rem; font-weight: 700; display: flex; align-items: center; gap: 0.35rem;">
-                    <span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background-color: ${isAllGreen ? "#10b981" : "#ef4444"};"></span>
+            <div class="ts-overlay">
+                <h4 class="ts-header">
+                    <span class="ts-indicator ${isAllGreen ? 'ts-pass' : 'ts-fail'}"></span>
                     AeroFinance Test Suite
                 </h4>
-                <span style="font-size: 0.75rem; font-weight: 600; color: ${isAllGreen ? "#10b981" : "#ef4444"}; background-color: ${isAllGreen ? "rgba(16, 185, 129, 0.1)" : "rgba(239, 68, 68, 0.1)"}; padding: 0.2rem 0.5rem; border-radius: 9999px;">
+                <span class="ts-badge ${isAllGreen ? 'ts-pass' : 'ts-fail'}">
                     ${passCount}/${total} Passed
                 </span>
             </div>
-            <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.75rem;">
+            <div class="ts-results">
                 ${results
                   .map(
                     (r, idx) => `
-                    <div style="display: flex; gap: 0.5rem; align-items: flex-start; justify-content: space-between; border-bottom: 1px dashed var(--border); padding-bottom: 0.35rem;">
-                        <span style="color: var(--muted-foreground); text-align: left;">${idx + 1}. ${escapeHTML(r.name)}</span>
-                        <span style="color: ${r.status === "pass" ? "#10b981" : "#ef4444"}; font-weight: bold; text-transform: uppercase;">
+                    <div class="ts-result-row">
+                        <span class="ts-result-name">${idx + 1}. ${escapeHTML(r.name)}</span>
+                        <span class="ts-status ${r.status === 'pass' ? 'ts-pass' : 'ts-fail'}">
                             ${r.status}
                         </span>
                     </div>
@@ -434,7 +434,7 @@
                   )
                   .join("")}
             </div>
-            <button onclick="this.parentElement.remove()" style="margin-top: 0.5rem; width: 100%; border: 1px solid var(--border); background-color: var(--secondary); color: var(--foreground); font-size: 0.75rem; padding: 0.4rem; border-radius: 4px; cursor: pointer; transition: 0.2s;">
+            <button class="ts-dismiss" onclick="this.parentElement.remove()">
                 Dismiss Summary
             </button>
         `;

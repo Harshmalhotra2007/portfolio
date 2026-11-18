@@ -296,7 +296,7 @@ function renderBudgets() {
                     <span>${formatCurrency(spent)} / ${budget > 0 ? formatCurrency(budget) : 'No limit'}</span>
                 </div>
                 <div class="budget-progress-track">
-                    <div class="budget-progress-fill ${fillClass}" style="--budget-progress-width: ${Math.min(percent, 100)}%"></div>
+                    <div class="budget-progress-fill ${fillClass}" data-width="${Math.min(percent, 100)}"></div>
                 </div>
             </div>
         `;
