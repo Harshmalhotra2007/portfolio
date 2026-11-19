@@ -202,23 +202,30 @@ data-btn,
 }
 
 .portfolio-link {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: 0.5rem;
   color: var(--muted-foreground);
   text-decoration: none;
   font-family: var(--font-sans);
   font-size: 0.9rem;
-  padding: 0.75rem;
-  border-radius: 4px;
+  font-weight: 600;
+  padding: 0.75rem 1.25rem;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.03);
   transition:
     background 0.2s,
-    color 0.2s;
+    color 0.2s,
+    border-color 0.2s,
+    transform 0.2s;
 }
 
 .portfolio-link:hover {
   background: rgba(0, 240, 255, 0.1);
   color: var(--primary);
+  border-color: var(--primary);
+  transform: translateX(-2px);
 }
 
 .data-panel-row {
